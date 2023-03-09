@@ -17,6 +17,7 @@ public class ClientThread extends Thread {
     private BufferedReader in;
     private Socket socket;
 
+
     /**
      * Each Client is constructed using 3 parameters, port, id and freq.
      *

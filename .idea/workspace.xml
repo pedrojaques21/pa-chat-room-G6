@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48097be5-3420-4453-b406-f849ba20e035" name="Changes" comment="Creating Marco branch">
-      <change afterPath="$PROJECT_DIR$/client/src/test/java/org/example/ClientThreadTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/test/java/org/example/ServerThreadTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="48097be5-3420-4453-b406-f849ba20e035" name="Changes" comment="More tests on the server side.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/test/java/org/example/ClientThreadTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/test/java/org/example/ClientThreadTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/test/java/org/example/ServerThreadTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/test/java/org/example/ServerThreadTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,8 +92,21 @@
       <recent name="org.example" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.ServerThreadTest.checkServerNull">
-    <configuration name="Client" type="Application" factoryName="Application" temporary="true">
+  <component name="RunManager" selected="JUnit.ClientThreadTest.testSendMessage">
+    <configuration name="Main (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.Main" />
+      <module name="server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.Main" />
       <module name="client" />
       <extension name="coverage">
@@ -108,20 +119,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Server" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.Main" />
-      <module name="server" />
+    <configuration name="ClientThreadTest.testSendMessage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="client" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="org.example.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.ClientThreadTest" />
+      <option name="METHOD_NAME" value="testSendMessage" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ServerThreadTest.checkServerNull" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ServerThreadTest.testClientTimeout" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="server" />
       <extension name="coverage">
         <pattern>
@@ -131,7 +145,23 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.example" />
       <option name="MAIN_CLASS_NAME" value="org.example.ServerThreadTest" />
-      <option name="METHOD_NAME" value="checkServerNull" />
+      <option name="METHOD_NAME" value="testClientTimeout" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerThreadTest.testMultipleClients" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example" />
+      <option name="MAIN_CLASS_NAME" value="org.example.ServerThreadTest" />
+      <option name="METHOD_NAME" value="testMultipleClients" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -139,9 +169,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.ServerThreadTest.checkServerNull" />
-        <item itemvalue="Application.Client" />
-        <item itemvalue="Application.Server" />
+        <item itemvalue="JUnit.ClientThreadTest.testSendMessage" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Main (1)" />
+        <item itemvalue="JUnit.ServerThreadTest.testMultipleClients" />
+        <item itemvalue="JUnit.ServerThreadTest.testClientTimeout" />
       </list>
     </recent_temporary>
   </component>
@@ -200,7 +232,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678376341290</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Creating test files in Marco branch">
+      <created>1678376779802</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1678376779802</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -222,6 +261,16 @@
     <MESSAGE value="chore: Initial Commit" />
     <MESSAGE value="chore: Rearranged files to create client and server separate" />
     <MESSAGE value="Creating Marco branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="Creating Marco branch" />
+    <MESSAGE value="Creating test files in Marco branch" />
+    <MESSAGE value="More tests on the server side." />
+    <option name="LAST_COMMIT_MESSAGE" value="More tests on the server side." />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="JUnit">
+        <watch expression="response" language="JAVA" />
+        <watch expression="out" language="JAVA" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

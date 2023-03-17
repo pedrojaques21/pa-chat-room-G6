@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.ArrayList;
+
 
 /**
  * ClientThread class represents each client that will interact with the server
@@ -18,6 +20,7 @@ public class ClientThread extends Thread {
     private Socket socket;
 
 
+
     /**
      * Each Client is constructed using 3 parameters, port, id and freq.
      *
@@ -29,6 +32,16 @@ public class ClientThread extends Thread {
         this.port = port;
         this.id = id;
         this.freq = freq;
+    }
+
+
+
+    /**
+     * Conecting Client to the server
+     */
+    public void connectServer() throws IOException{
+        socket = new Socket("localhost",port);
+
     }
 
     @Override

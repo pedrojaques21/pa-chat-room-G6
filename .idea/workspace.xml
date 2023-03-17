@@ -5,16 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48097be5-3420-4453-b406-f849ba20e035" name="Changes" comment="feat(LoggerThread): created the thread that will log the events of the server">
-      <change afterPath="$PROJECT_DIR$/server/filtro.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_3_6_2023_12_38_AM_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_3_6_2023_12_38_AM__Changes_.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/org/example/ServerConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/org/example/ClientThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/org/example/ClientThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/org/example/LoggerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/org/example/LoggerThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/org/example/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/filtro.txt" beforeDir="false" afterPath="$PROJECT_DIR$/server/filter.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/server.config" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.config" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/org/example/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/org/example/ServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/org/example/ServerThread.java" afterDir="false" />
@@ -85,7 +78,7 @@
       <recent name="C:\Users\pedro\IdeaProjects\pa-chat-room\server\" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Client">
+  <component name="RunManager" selected="Application.Server">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.example.Main" />
       <module name="client" />
@@ -114,8 +107,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Client" />
         <item itemvalue="Application.Server" />
+        <item itemvalue="Application.Client" />
       </list>
     </recent_temporary>
   </component>
@@ -140,6 +133,7 @@
       <workItem from="1678577791946" duration="72000" />
       <workItem from="1678744433541" duration="2987000" />
       <workItem from="1679066748281" duration="983000" />
+      <workItem from="1679082276074" duration="5215000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Initial Commit">
       <created>1678062215885</created>
@@ -183,7 +177,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678205105994</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="feat(LoggerThread): created the thread that will log the events of the server">
+      <created>1679082305789</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1679082305789</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

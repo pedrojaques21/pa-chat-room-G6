@@ -20,11 +20,11 @@ public class ClientThread extends Thread {
     /**
      * Each Client is constructed using 3 parameters, port, id and freq.
      *
-     * @param port is the port where the client should connect to the server;
-     * @param id is the unique identifier of the client;
-     * @param freq is the frequency of interaction with the server;
+     * @param port   is the port where the client should connect to the server;
+     * @param id     is the unique identifier of the client;
+     * @param freq   is the frequency of interaction with the server;
      */
-    public ClientThread ( int port , int id , int freq ) {
+    public ClientThread (int port , int id , int freq) {
         this.port = port;
         this.id = id;
         this.freq = freq;
@@ -32,7 +32,6 @@ public class ClientThread extends Thread {
 
     @Override
     public void run ( ) {
-        //try {
         int i = 0;
         while ( true ) {
             System.out.println ( "Sending Data" );

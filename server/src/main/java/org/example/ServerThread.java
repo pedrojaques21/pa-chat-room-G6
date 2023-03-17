@@ -15,14 +15,19 @@ public class ServerThread extends Thread {
     private PrintWriter out;
     private ServerSocket server;
     private Socket socket;
+    private int maxClients;
+    static int clientCount = 0;
 
     /**
-     * Each Server is constructed using the port number where it will be connected.
+     * Each Server is constructed using the port number where it will be connected and the
+     * maximum number of clients it can handle.
      *
-     * @param port is the port where the server is connected.
+     * @param port is the port where the server is connected
+     * @param maxClients is the maximum number of clients that the server supports
      */
-    public ServerThread ( int port ) {
+    public ServerThread ( int port, int maxClients ) {
         this.port = port;
+        this.maxClients = maxClients;
         try {
             server = new ServerSocket ( this.port );
         } catch ( IOException e ) {

@@ -4,10 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48097be5-3420-4453-b406-f849ba20e035" name="Changes" comment="chore: Rearranged files to create client and server separate">
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/org/example/LoggerThread.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/server.config" afterDir="false" />
+    <list default="true" id="48097be5-3420-4453-b406-f849ba20e035" name="Changes" comment="feat(LoggerThread): created the thread that will log the events of the server">
+      <change afterPath="$PROJECT_DIR$/server/filtro.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_3_6_2023_12_38_AM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_3_6_2023_12_38_AM__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/org/example/ClientThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/org/example/ClientThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/org/example/LoggerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/org/example/LoggerThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/org/example/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/server.config" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/org/example/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/org/example/ServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/org/example/ServerThread.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +37,6 @@
         <entry key="$PROJECT_DIR$" value="dev" />
       </map>
     </option>
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -47,25 +56,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "jdk.selected.JAVA_MODULE": "openjdk-19",
-    "last_directory_selection": "C:/Users/pedro/IdeaProjects/pa-chat-room/src/main/java",
-    "last_opened_file_path": "C:/Users/pedro/IdeaProjects/test",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;openjdk-19&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/pedro/IdeaProjects/pa-chat-room/src/main/java&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/pedro/IdeaProjects/pa-chat-room&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="Push.Settings">
     <force-push-targets>
       <force-push-target remote-path="origin" branch="dev" />
@@ -121,7 +130,16 @@
       <workItem from="1678061855918" duration="159000" />
       <workItem from="1678062042693" duration="726000" />
       <workItem from="1678129711575" duration="1000000" />
-      <workItem from="1678202034248" duration="2681000" />
+      <workItem from="1678202034248" duration="3082000" />
+      <workItem from="1678208149780" duration="1615000" />
+      <workItem from="1678270699785" duration="612000" />
+      <workItem from="1678311479708" duration="297000" />
+      <workItem from="1678312429463" duration="23000" />
+      <workItem from="1678315152202" duration="120000" />
+      <workItem from="1678573436464" duration="678000" />
+      <workItem from="1678577791946" duration="72000" />
+      <workItem from="1678744433541" duration="2987000" />
+      <workItem from="1679066748281" duration="983000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Initial Commit">
       <created>1678062215885</created>
@@ -158,7 +176,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678130701480</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="feat(LoggerThread): created the thread that will log the events of the server">
+      <created>1678205105994</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1678205105994</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -179,6 +204,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="chore: Initial Commit" />
     <MESSAGE value="chore: Rearranged files to create client and server separate" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: Rearranged files to create client and server separate" />
+    <MESSAGE value="feat(LoggerThread): created the thread that will log the events of the server" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(LoggerThread): created the thread that will log the events of the server" />
   </component>
 </project>

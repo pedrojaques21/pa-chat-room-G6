@@ -1,9 +1,8 @@
     package org.example;
 
-    import java.io.DataOutputStream;
-    import java.io.DataInputStream;
-    import java.io.IOException;
+    import java.io.*;
     import java.net.Socket;
+    import java.util.Scanner;
 
 
     import org.junit.jupiter.api.*;
@@ -31,7 +30,6 @@
         }
 
 
-
         @Test
         public void testClientTimeout() throws IOException {
             Socket socket = new Socket("localhost", serverPort);
@@ -42,7 +40,6 @@
             assertThrows(IOException.class, () -> new DataInputStream(socket.getInputStream()).readUTF());
             socket.close();
         }
-
 
 
         @Test
@@ -60,11 +57,37 @@
         }
 
 
-    @Test
+        @Test
         @DisplayName("Check if server is not null")
-        void checkServerNull(){
+        void checkServerNull() {
             assertNotNull(serverThread.getName());
 
         }
 
+        @Test
+        void testValueOfTheConfigFile() {
+            try {
+                File file = new File("server.config");
+                Scanner scanner = new Scanner(file);
+                int clientMax = 0;
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    if (line.startsWith("CLIENT_MAX")) {
+                        String[] parts = line.split("=");
+                        if (parts.length == 2) {
+                            clientMax = Integer.parseInt(parts[1].trim());
+                            break;
+                        }
+                    }
+                }
+                scanner.close();
+                System.out.println("CLIENT_MAX: " + clientMax);
+
+                assertEquals(20,clientMax);
+            } catch (
+                    FileNotFoundException e) {
+                System.out.println("File not found.");
+            }
+
+        }
     }

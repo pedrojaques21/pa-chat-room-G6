@@ -10,6 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClientThreadTest {
 
+    @Test
+    public void testValueReadFromTheFile() throws IOException {
 
+
+    }
 
 }

@@ -5,7 +5,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.concurrent.Semaphore;
 import java.util.ArrayList;
+import java.util.Queue;
+import java.io.*;
 
 
 /**
@@ -14,10 +17,12 @@ import java.util.ArrayList;
 public class ClientThread extends Thread {
     private final int port;
     private final int id;
-    private final int freq;
+    /**private final int freq;*/
     private DataOutputStream out;
     private BufferedReader in;
     private Socket socket;
+
+    /**private final Semaphore sem;*/
 
 
 
@@ -26,33 +31,60 @@ public class ClientThread extends Thread {
      *
      * @param port is the port where the client should connect to the server;
      * @param id is the unique identifier of the client;
-     * @param freq is the frequency of interaction with the server;
+     *
      */
-    public ClientThread ( int port , int id , int freq ) {
+    public ClientThread ( int port , int id) {
         this.port = port;
         this.id = id;
-        this.freq = freq;
+        /**this.freq = freq;
+         * this.sem = sem;*/
+
     }
 
 
 
     /**
-     * Conecting Client to the server
+     * Creating Client
      */
-    public void connectServer() throws IOException{
-        socket = new Socket("localhost",port);
+    public void createClient() {
+        try {
+            socket = new Socket("localhost", 8080);
+            out = new DataOutputStream ( socket.getOutputStream ( ) );
+            String request = "CREATE_CLIENT";
+            out.writeUTF ( request + " " +this.id);
+            out.flush ( );
+            socket.close();
+            System.out.println("Sent message to server: " + request);
+        }catch ( IOException e ) {
+            e.printStackTrace ( );
+        }
 
+    }
+
+    public void sendMessage(int id, String message){
+        try {
+            socket = new Socket("localhost", 8080);
+            out = new DataOutputStream ( socket.getOutputStream ( ) );
+            String request = "CREATE_CLIENT";
+            out.writeUTF ( request + " " +this.id);
+            out.flush ( );
+            socket.close();
+            System.out.println("Sent message to server: " + request);
+        }catch ( IOException e ) {
+            e.printStackTrace ( );
+        }
     }
 
     @Override
     public void run ( ) {
+
         //try {
         int i = 0;
         while ( true ) {
             System.out.println ( "Sending Data" );
             try {
                 // if(sem.tryAcquire(1, TimeUnit.SECONDS)) {
-                socket = new Socket ( "localhost" , port );
+                socket = new Socket ( "localhost" , 8080);
                 out = new DataOutputStream ( socket.getOutputStream ( ) );
                 in = new BufferedReader ( new InputStreamReader ( socket.getInputStream ( ) ) );
                 out.writeUTF ( "My message number " + i + " to the server " + "I'm " + id );
@@ -61,7 +93,7 @@ public class ClientThread extends Thread {
                 System.out.println ( "From Server " + response );
                 out.flush ( );
                 socket.close ( );
-                sleep ( freq );
+                sleep ( 1000 );
                 i++;
             } catch ( IOException | InterruptedException e ) {
                 e.printStackTrace ( );

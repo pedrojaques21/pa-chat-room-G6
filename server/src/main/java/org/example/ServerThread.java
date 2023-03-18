@@ -1,12 +1,8 @@
 package org.example;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -14,19 +10,23 @@ import java.util.Scanner;
  */
 public class ServerThread extends Thread {
     private final int port;
-    private DataInputStream in;
-    private PrintWriter out;
-    private ServerSocket server;
-    private Socket socket;
+    private static DataInputStream in;
+    private static PrintWriter out;
+    private static ServerSocket server;
+    private static Socket socket;
 
-    private static int clientMax = 0;
+    private static int maxClients;
+    static int clientCount = 0;
 
-    private static ArrayList<Thread> clients = new ArrayList<>(clientMax);
+    private static ArrayList<ClientThread> clients = new ArrayList<>(maxClients);
+
 
 
     public static int getClientMax() {
-        return clientMax;
+        return maxClients;
     }
+
+
 
     public static void readServerConfig(){
         try {
@@ -55,8 +55,9 @@ public class ServerThread extends Thread {
      *
      * @param port is the port where the server is connected.
      */
-    public ServerThread ( int port ) {
+    public ServerThread ( int port, int maxClients ) {
         this.port = port;
+        this.maxClients = maxClients;
         try {
             server = new ServerSocket ( this.port );
         } catch ( IOException e ) {
@@ -64,18 +65,50 @@ public class ServerThread extends Thread {
         }
     }
 
+
+    public static void checkServerSize(int id) throws IOException {
+        int size = clients.size();
+        if(size<=maxClients){
+            ClientThread clientThread = new ClientThread(8080,id);
+            clients.add(clientThread);
+            System.out.println("size:" + clients.size());
+        }else{
+
+        }
+
+    }
+
+
+
     @Override
     public void run ( ) {
 
         while ( true ) {
             try {
-                System.out.println ( "Accepting Data" );
+                //System.out.println ( "Accepting Data" );
                 socket = server.accept ( );
                 in = new DataInputStream ( socket.getInputStream ( ) );
                 out = new PrintWriter ( socket.getOutputStream ( ) , true );
-                String message = in.readUTF ( );
-                System.out.println ( "***** " + message + " *****" );
-                out.println ( message.toUpperCase ( ) );
+                String messageRecieved = in.readUTF ( );
+                System.out.println (messageRecieved);
+                out.println ( messageRecieved.toUpperCase ( ) );
+                String command = messageRecieved.substring(0, messageRecieved.indexOf(' '));
+                String numberString = messageRecieved.substring(messageRecieved.indexOf(' ') + 1);
+                int number = Integer.parseInt(numberString);
+                switch (command){
+                    case "CREATE_CLIENT":
+                        System.out.println("CREATING A CLIENT");
+                        checkServerSize(number);
+
+                        break;
+                    case "SEND_MESSAGE":
+                        System.out.println("SEND A MESSAGE");
+                        break;
+                    default:
+                        break;
+                }
+
+
             } catch ( IOException e ) {
                 e.printStackTrace ( );
             }

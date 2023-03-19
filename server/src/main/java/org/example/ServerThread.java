@@ -40,7 +40,7 @@ public class ServerThread extends Thread {
 
         while ( true ) {
             try {
-                System.out.println ( "Accepting Data" );
+                System.out.println ( "Server Started Successfully" );
                 socket = server.accept ( );
                 in = new DataInputStream ( socket.getInputStream ( ) );
                 out = new PrintWriter ( socket.getOutputStream ( ) , true );

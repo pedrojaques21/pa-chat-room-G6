@@ -74,6 +74,9 @@ public class Main {
         scanner.close();
     }
 
+    /**
+     * This method will update server configs directly to the server.config file during server run time
+     */
     private static void updateServerConfigs ( ) {
 
         String key;

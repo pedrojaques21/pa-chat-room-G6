@@ -3,7 +3,6 @@ import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 public class Main {
-
     public static void main ( String[] args ) {
 
         Semaphore   sem = new Semaphore(1);
@@ -24,8 +23,18 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("Option 1 selected.");
-                    ClientThread client = new ClientThread ( 8080 , 1 );
-                    client.createClient();
+                    ClientThread client = new ClientThread ( 8080 ,1 );
+                    //client.createClient();
+                    client.start();
+                    ClientThread client1 = new ClientThread ( 8080 ,1 );
+                    //client.createClient();
+                    client1.start();
+                    ClientThread client2 = new ClientThread ( 8080 ,1 );
+                    //client.createClient();
+                    client2.start();
+                    ClientThread client3 = new ClientThread ( 8080 ,1 );
+                    //client.createClient();
+                    client3.start();
                     break;
                 case 2:
                     System.out.println("Option 2 selected.");
@@ -34,8 +43,10 @@ public class Main {
                     System.out.println("Who is trying to send a message?");
                     System.out.print("Insert id: \n");
                     int id = option.nextInt();
+                    System.out.println("Id inserted: " + id);
                     System.out.print("Insert Message: ");
                     String message = option.nextLine();
+                    System.out.println("Message to be sent: " + message);
 
                     break;
                 case 4:

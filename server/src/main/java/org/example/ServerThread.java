@@ -1,7 +1,7 @@
 package org.example;
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -18,8 +18,9 @@ public class ServerThread extends Thread {
     private static int maxClients;
     static int clientCount = 0;
 
-    private static ArrayList<ClientThread> clients = new ArrayList<>(maxClients);
+    private static ArrayList<Integer> clients = new ArrayList<Integer>(maxClients);
 
+    private static ArrayList<Integer> clientsOnPort = new ArrayList<Integer>();
 
 
     public static int getClientMax() {
@@ -69,14 +70,27 @@ public class ServerThread extends Thread {
     public static void checkServerSize(int id) throws IOException {
         int size = clients.size();
         if(size<=maxClients){
-            ClientThread clientThread = new ClientThread(8080,id);
-            clients.add(clientThread);
+            clients.add(id);
             System.out.println("size:" + clients.size());
         }else{
 
         }
 
     }
+
+    /**
+    public static void getClientsOnPort(int port) {
+        System.out.println("HELLOOOO");
+
+        for (Integer client : clients) {
+            System.out.println("HEELO 2");
+            if (client.getSocket().getPort() == port) {
+                System.out.println("HEELLO 3");
+                clientsOnPort.add(client);
+            }
+        }
+
+    }*/
 
 
 
@@ -90,21 +104,22 @@ public class ServerThread extends Thread {
                 in = new DataInputStream ( socket.getInputStream ( ) );
                 out = new PrintWriter ( socket.getOutputStream ( ) , true );
                 String messageRecieved = in.readUTF ( );
-                System.out.println (messageRecieved);
+                //System.out.println (messageRecieved);
                 out.println ( messageRecieved.toUpperCase ( ) );
                 String command = messageRecieved.substring(0, messageRecieved.indexOf(' '));
                 String numberString = messageRecieved.substring(messageRecieved.indexOf(' ') + 1);
-                int number = Integer.parseInt(numberString);
+
                 switch (command){
-                    case "CREATE_CLIENT":
+                    case "1":
                         System.out.println("CREATING A CLIENT");
-                        checkServerSize(number);
+                        checkServerSize(Integer.parseInt(numberString));
 
                         break;
                     case "SEND_MESSAGE":
                         System.out.println("SEND A MESSAGE");
                         break;
                     default:
+                        System.out.println("NONE");
                         break;
                 }
 

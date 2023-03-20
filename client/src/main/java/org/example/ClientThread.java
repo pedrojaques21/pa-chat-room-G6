@@ -1,28 +1,30 @@
 package org.example;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Set;
 
 
 /**
  * ClientThread class represents each client that will interact with the server
  */
 public class ClientThread extends Thread {
-    private final int port;
-    private final int id;
-    /**private final int freq;*/
-
-    private final int action;
-
-    private int totalClients = 0;
+    private int port;
+    private int id;
+    private int totalClients;
     private DataOutputStream out;
     private BufferedReader in;
     private Socket socket;
 
-    /**private final Semaphore sem;*/
 
+
+
+ 
+    private static ArrayList<ClientThread> clients = new ArrayList<>();
+
+
+    /**private final Semaphore sem;*/
 
 
     /**
@@ -32,11 +34,17 @@ public class ClientThread extends Thread {
      * id is the unique identifier of the client;
      *
      */
-    public ClientThread ( int port , int action) {
-        this.port = port;
-        this.id = totalClients;
-        this.action = action;
+    public ClientThread (Socket socket, int port) throws IOException {
+     //   try {
+            this.socket = socket;
 
+            this.port = port;
+            clients.add(this);
+            this.id = clients.size();
+            sendMessage(this.id,this.id + "Entered the chat!");
+       /** }catch (IOException e){
+            e.printStackTrace();
+        }*/
     }
 
 
@@ -56,12 +64,15 @@ public class ClientThread extends Thread {
         try {
             socket = new Socket("localhost", 8080);
             out = new DataOutputStream ( socket.getOutputStream ( ) );
-            String request = "CREATE_CLIENT";
-            totalClients++;
-            out.writeUTF ( this.action + " " + this.id);
+            clients.add(this);
+            out.writeUTF ( '1' + " " + this.id);
             out.flush ( );
             socket.close();
-            System.out.println("Sent message to server: " + request + "id: " + this.id);
+            System.out.println(this);
+            System.out.println("Sent message to server: " +"id: " + this.id);
+            for (ClientThread t: clients) {
+                System.out.println(t.id);
+            }
         }catch ( IOException e ) {
             e.printStackTrace ( );
         }
@@ -69,56 +80,33 @@ public class ClientThread extends Thread {
     }
 
     public void sendMessage(int id, String message){
-        try {
-            socket = new Socket("localhost", 8080);
-            out = new DataOutputStream ( socket.getOutputStream ( ) );
-            String request = "CREATE_CLIENT";
-            out.writeUTF ( request + " " +this.id);
-            out.flush ( );
-            socket.close();
-            System.out.println("Sent message to server: " + request);
-        }catch ( IOException e ) {
-            e.printStackTrace ( );
-        }
+            try {
+                socket = new Socket ( "localhost" , 8080);
+                out = new DataOutputStream ( socket.getOutputStream ( ) );
+                in = new BufferedReader ( new InputStreamReader( socket.getInputStream ( ) ) );
+                out.writeUTF("2" + "ID: " + id + "Message: " +message);
+                out.flush ( );
+                socket.close ( );
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+    }
+
+    public void removeClient(){
+        clients.remove(this);
+        sendMessage(this.id,this.id + "Left the chat!");
     }
 
     @Override
     public void run ( ) {
+        /**
+           try {
 
-        //try {
-        int i = 0;
-      //  while ( true ) {
-            System.out.println ( "Sending Data" );
-           // try {
-                if(this.action==1){
-                    System.out.println("CREATING A CLIENT!!\n");
-                }
-                switch (action){
-                    case 1:
-                        createClient();
-                        break;
-                    case 2:
-                        //sendMessage();
-                        break;
-                    default:
-                        break;
-                }
-                /**
-                // if(sem.tryAcquire(1, TimeUnit.SECONDS)) {
-                socket = new Socket ( "localhost" , 8080);
-                out = new DataOutputStream ( socket.getOutputStream ( ) );
-                in = new BufferedReader ( new InputStreamReader ( socket.getInputStream ( ) ) );
-                out.writeUTF ( "My message number " + i + " to the server " + "I'm " + id );
-                String response;
-                response = in.readLine ( );
-                System.out.println ( "From Server " + response );
-                out.flush ( );
-                socket.close ( );
                 sleep ( 1000 );
-                i++;
+
             } catch ( IOException | InterruptedException e ) {
                 e.printStackTrace ( );
             }*/
-       // }
+
     }
 }

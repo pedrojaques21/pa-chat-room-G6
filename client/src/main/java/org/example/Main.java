@@ -1,11 +1,16 @@
 package org.example;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 public class Main {
-    public static void main ( String[] args ) {
+    public static void main ( String[] args ) throws IOException {
 
         Semaphore   sem = new Semaphore(1);
+
+        Socket socket = new Socket();
+
 
 
         Scanner option = new Scanner(System.in);
@@ -23,31 +28,23 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("Option 1 selected.");
-                    ClientThread client = new ClientThread ( 8080 ,1 );
-                    //client.createClient();
-                    client.start();
-                    ClientThread client1 = new ClientThread ( 8080 ,1 );
-                    //client.createClient();
-                    client1.start();
-                    ClientThread client2 = new ClientThread ( 8080 ,1 );
-                    //client.createClient();
-                    client2.start();
-                    ClientThread client3 = new ClientThread ( 8080 ,1 );
-                    //client.createClient();
-                    client3.start();
+                    ClientThread client = new ClientThread ( socket,8080);
+                    client.createClient();
                     break;
                 case 2:
-                    System.out.println("Option 2 selected.");
-                    break;
-                case 3:
                     System.out.println("Who is trying to send a message?");
                     System.out.print("Insert id: \n");
                     int id = option.nextInt();
-                    System.out.println("Id inserted: " + id);
+                    Scanner res = new Scanner(System.in);
                     System.out.print("Insert Message: ");
-                    String message = option.nextLine();
+                    String message = res.nextLine();
+                    System.out.println("Id inserted: " + id);
                     System.out.println("Message to be sent: " + message);
-
+                    ClientThread clientMessage = new ClientThread(socket,8080);
+                    clientMessage.sendMessage(id,message);
+                    break;
+                case 3:
+                    System.out.println("Option 3 selected.");
                     break;
                 case 4:
                     System.out.println("Exiting...");

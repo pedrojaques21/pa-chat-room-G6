@@ -27,7 +27,7 @@ public class Main {
         int serverPort = Integer.parseInt(serverPortStr);
         int maxClients = Integer.parseInt(maxClientsStr);
 
-        ServerThread server = new ServerThread ( serverPort , maxClients );
+        ServerThread server = new ServerThread ( serverPort , maxClients,10 );//Colocar os número de workers no file config?
 
         int choice = 0;
 

@@ -2,28 +2,25 @@ package org.example;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * ServerThread class represents the Server that will serve the Clients
  */
 public class ServerThread extends Thread {
     private int port;
-    private static DataInputStream in;
-    private static PrintWriter out;
-    private static ServerSocket server;
-    private static Socket socket;
+
+    private final ExecutorService executor;
+
+    private ServerSocket server;
 
     private static int maxClients;
-    static int clientCount = 0;
 
-    private static ArrayList<ClientThread> clients = new ArrayList<>(maxClients);
+    private static ArrayList<ClientHandler> connections;
 
-    private static ArrayList<Socket> clientsConnected = new ArrayList<>();
-
-
+    private static Map<Integer,Socket> connectedClients;
 
     public static int getClientMax() {
         return maxClients;
@@ -36,80 +33,131 @@ public class ServerThread extends Thread {
      *
      * @param port is the port where the server is connected.
      */
-    public ServerThread ( int port, int maxClients ) {
+    public ServerThread ( int port, int maxClients,int nWorkers ) {
         this.port = port;
         this.maxClients = maxClients;
+        connections = new ArrayList<>();
+        connectedClients = new HashMap<>(maxClients);
+        this.executor = Executors.newFixedThreadPool ( nWorkers );
         try {
-            server = new ServerSocket ( this.port );
+            server = new ServerSocket ( 8080 );
         } catch ( IOException e ) {
             e.printStackTrace ( );
         }
     }
 
-    public static void sendtMessage(Socket client, String message) throws IOException {
-        in = new DataInputStream ( client.getInputStream ( ) );
-        out = new PrintWriter ( client.getOutputStream ( ) , true );
-        out.println(message);
-    }
+    public static void broadcastMessage(String message) throws IOException {
 
-    public static void brodcastMessage(String message) {
-        for(Socket cli: clientsConnected){
-            out.println(message);
+        for (int key : connectedClients.keySet()) {
+            Socket client = connectedClients.get(key);
+            OutputStream cliOut = client.getOutputStream();
+            OutputStreamWriter cliOutWrit = new OutputStreamWriter(cliOut);
+            BufferedWriter bw = new BufferedWriter(cliOutWrit);
+            bw.write(message);
+            bw.flush();
         }
     }
-
-
-    public static void checkServerSize(Socket client) throws IOException {
-        int size = clientsConnected.size();
-        if(clientsConnected.size()<5){
-            clientsConnected.add(client);
-            for(Socket clientC: clientsConnected) {
-                System.out.print("size:" + clientsConnected.size());
-                System.out.print(" Client: " + clientC);
-            }
-        }else{
-            sendtMessage(client,"Server is Full!\n");
-        }
-    }
-
-
-
 
     @Override
     public void run ( ) {
-
-        while ( true ) {
-            try {
-                //System.out.println ( "Accepting Data" );
-                socket = server.accept ( );
-                in = new DataInputStream ( socket.getInputStream ( ) );
-                out = new PrintWriter ( socket.getOutputStream ( ) , true );
-                String messageRecieved = in.readUTF ( );
-                //System.out.println (messageRecieved);
-                out.println ( messageRecieved.toUpperCase ( ) );
-                String command = messageRecieved.substring(0, messageRecieved.indexOf(' '));
-                String numberString = messageRecieved.substring(messageRecieved.indexOf(' ') + 1);
-
-                switch (command){
-                    case "1":
-                        System.out.println("CREATING A CLIENT");
-                        checkServerSize(socket);
-                        break;
-                    case "2":
-                        System.out.println("SEND A MESSAGE");
-                        brodcastMessage(command);
-                        break;
-                    default:
-                        System.out.println("NONE");
-                        break;
+        processRequests();
+    }
+    private void processRequests ( ) {
+        Thread t = new Thread ( ( ) -> {
+            while ( true ) {
+                try {
+                    // Reads the request
+                    Socket client = server.accept ( );
+                    ClientHandler clientHandler = new ClientHandler(client);
+                    executor.submit(clientHandler);
+                } catch ( IOException e ) {
+                    throw new RuntimeException ( e );
                 }
+            }
+        } );
+        t.start ( );
+    }
 
 
-            } catch ( IOException e ) {
-                e.printStackTrace ( );
+
+    class ClientHandler implements Runnable{
+
+        private Socket client;
+        private DataInputStream  in;
+        private PrintWriter out;
+        public ClientHandler(Socket client){
+            this.client = client;
+        }
+        @Override
+        public void run() {
+            try {
+                out = new PrintWriter(client.getOutputStream(),true);
+                in = new DataInputStream(client.getInputStream());
+
+                while (true) {
+                    String messageRecieved = in.readUTF();
+                    String[] parts = messageRecieved.split(" ");
+                    String action = parts[0];
+                    String id = parts[1];
+                    if(Objects.equals(action, "CREATE")){
+                        if (checkServerSize()) {
+                            connectClient(Integer.parseInt(id), client);
+                        } else {
+                            sendMessageToClient("Server is Full!\n");
+                        }
+                    } else if (Objects.equals(action, "MESSAGE")) {
+                        System.out.println("Vou enviar mensagem!\n");
+                        broadcastMessage(messageRecieved);
+                    }
+/**
+                    switch (action) {
+                        case "CREATE":
+                            if (checkServerSize()) {
+                                connectClient(Integer.parseInt(id), client);
+                            } else {
+                                sendMessageToClient("Server is Full!\n");
+                            }
+                            break;
+                        case "MESSAGE":
+                            System.out.println("Vou enviar mensagem!\n");
+                            broadcastMessage(messageRecieved);
+                            break;
+                        default:
+                            break;
+                    }
+ */
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                try {
+                    client.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
+        public void sendMessageToClient(String message){
+            out.println(message);
+        }
+
+        public void connectClient(int id, Socket client){
+            connectedClients.put(id,client);
+            for(Map.Entry<Integer, Socket> cli : connectedClients.entrySet()){
+                System.out.println("ID: " + cli.getKey() + " Socket: " + cli.getValue());
+            }
+        }
+
+
+        public boolean checkServerSize() throws IOException {
+            if(connectedClients.size() < maxClients){
+                System.out.println("Entrou no check");
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 
 

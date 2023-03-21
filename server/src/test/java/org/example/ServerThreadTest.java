@@ -19,7 +19,7 @@
         @DisplayName("Creating a server for testing before each test")
         public void startServer() {
             serverPort = 8888;
-            serverThread = new ServerThread(serverPort,20);
+            serverThread = new ServerThread(serverPort,20,10);
             serverThread.start();
         }
 

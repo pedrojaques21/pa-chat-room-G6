@@ -16,11 +16,6 @@ public class ClientThread extends Thread {
     private DataOutputStream out;
     private BufferedReader in;
     private Socket socket;
-
-
-
-
- 
     private static ArrayList<ClientThread> clients = new ArrayList<>();
 
 
@@ -34,17 +29,10 @@ public class ClientThread extends Thread {
      * id is the unique identifier of the client;
      *
      */
-    public ClientThread (Socket socket, int port) throws IOException {
-     //   try {
+    public ClientThread (Socket socket, int port) {
             this.socket = socket;
-
             this.port = port;
-            clients.add(this);
             this.id = clients.size();
-            sendMessage(this.id,this.id + "Entered the chat!");
-       /** }catch (IOException e){
-            e.printStackTrace();
-        }*/
     }
 
 
@@ -65,48 +53,75 @@ public class ClientThread extends Thread {
             socket = new Socket("localhost", 8080);
             out = new DataOutputStream ( socket.getOutputStream ( ) );
             clients.add(this);
-            out.writeUTF ( '1' + " " + this.id);
+            out.writeUTF ( "CREATE" + " " + this.id);
             out.flush ( );
-            socket.close();
-            System.out.println(this);
-            System.out.println("Sent message to server: " +"id: " + this.id);
-            for (ClientThread t: clients) {
-                System.out.println(t.id);
-            }
         }catch ( IOException e ) {
             e.printStackTrace ( );
         }
 
     }
 
-    public void sendMessage(int id, String message){
+    public void sendMessage(int id,String message){
             try {
-                socket = new Socket ( "localhost" , 8080);
-                out = new DataOutputStream ( socket.getOutputStream ( ) );
-                in = new BufferedReader ( new InputStreamReader( socket.getInputStream ( ) ) );
-                out.writeUTF("2" + "ID: " + id + "Message: " +message);
-                out.flush ( );
-                socket.close ( );
+                if(clients.isEmpty()){
+                    System.out.println("There are no clients on the chat!\n");
+                }else{
+                    for(ClientThread cli: clients) {
+                        if(cli.id == id) {
+                            if (cli.out == null) {
+                                cli.out = new DataOutputStream(cli.socket.getOutputStream());
+                            }
+                            cli.out.writeUTF("MESSAGE" + id + message);
+                            cli.out.flush();
+                        }
+                    }
+                }
             }catch (IOException e){
                 e.printStackTrace();
             }
     }
 
+    public void broadcastMessage(String message) {
+        for (ClientThread client : clients) {
+            if (client.id != id) {
+                try {
+                    client.out.writeUTF("MESSAGE " + id + " " + message);
+                    client.out.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public void removeClient(){
         clients.remove(this);
-        sendMessage(this.id,this.id + "Left the chat!");
+        broadcastMessage(id + " left the chat!");
     }
 
     @Override
     public void run ( ) {
-        /**
-           try {
+        try {
+            // get the input stream of the socket
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new DataOutputStream(socket.getOutputStream());
 
-                sleep ( 1000 );
+            broadcastMessage(id + " joined the chat!");
 
-            } catch ( IOException | InterruptedException e ) {
-                e.printStackTrace ( );
-            }*/
+            clients.add(this);
 
+            // continuously read messages from the server
+            String message;
+            while ((message = in.readLine()) != null) {
+                broadcastMessage(message);
+            }
+
+            // close the input stream and the socket when the loop ends
+            in.close();
+            socket.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

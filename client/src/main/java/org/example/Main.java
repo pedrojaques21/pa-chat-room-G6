@@ -9,7 +9,7 @@ public class Main {
 
         Semaphore   sem = new Semaphore(1);
 
-        Socket socket = new Socket();
+        Socket socket = new Socket("localhost", 8080);
 
 
 

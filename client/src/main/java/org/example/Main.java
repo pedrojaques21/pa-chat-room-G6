@@ -11,6 +11,8 @@ public class Main {
         Semaphore   sem = new Semaphore(1);
         ReentrantLock ClientLock = new ReentrantLock();
 
+        int totalClients = 0;
+
 
         Socket socket = new Socket("localhost", 8080);
 
@@ -29,7 +31,8 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("Option 1 selected.");
-                    ClientThread client = new ClientThread ( socket,8080,ClientLock);
+                    ClientThread client = new ClientThread (totalClients, socket,8080,ClientLock);
+                    totalClients = totalClients + 1;
                     client.start();
                     //client.createClient();
 
@@ -43,7 +46,7 @@ public class Main {
                     String message = res.nextLine();
                     System.out.println("Id inserted: " + id);
                     System.out.println("Message to be sent: " + message);
-                    ClientThread clientMessage = new ClientThread(socket,8080,ClientLock);
+                    ClientThread clientMessage = new ClientThread(totalClients,socket,8080,ClientLock);
                     clientMessage.sendMessage(id,message);
                     break;
                 case 3:

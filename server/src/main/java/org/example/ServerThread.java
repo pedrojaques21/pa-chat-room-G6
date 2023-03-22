@@ -87,25 +87,34 @@ public class ServerThread extends Thread {
     class ClientHandler implements Runnable{
 
         private Socket clientHandel;
-        private DataInputStream  in;
+        //private BufferedReader in;
+        private DataInputStream in;
+
         private PrintWriter out;
         public ClientHandler(Socket client){
             this.clientHandel = client;
         }
         @Override
         public void run() {
-            try {
-                out = new PrintWriter(clientHandel.getOutputStream(),true);
-                in = new DataInputStream(clientHandel.getInputStream());
+        //    while (true) {
+                try {
+                    //out = new PrintWriter(clientHandel.getOutputStream(), true);
+                    //in = new BufferedReader(new InputStreamReader(clientHandel.getInputStream()));
+                    in     = new DataInputStream(clientHandel.getInputStream());
+                    out    = new PrintWriter(clientHandel.getOutputStream(),true);
+                    String message= in.readUTF();
+                    System.out.println("***** "+message+" *****");
+                    out.println(message.toUpperCase());
 
-                while (true) {
-                    String messageRecieved = in.readUTF();
-                    String[] parts = messageRecieved.split(" ");
+                    //String messageRecieved = in.readLine();
+                    String[] parts = message.split(" ");
                     String action = parts[0];
                     String id = parts[1];
                     String msgReceived = parts[2];
+                    System.out.println("ENTROU AQUI?");
+                    System.out.println("Received this action: " + action);
                     out.println("ACTION: " + action);
-                    switch (action){
+                    switch (action) {
                         case "CREATE":
                             if (checkServerSize()) {
                                 connectClient(Integer.parseInt(id), clientHandel);
@@ -116,10 +125,11 @@ public class ServerThread extends Thread {
                         case "MESSAGE":
                             broadcastMessage(msgReceived);
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+          //  }
         }
 
         public void sendMessageToClient(String message){

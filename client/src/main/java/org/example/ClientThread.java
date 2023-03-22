@@ -32,11 +32,16 @@ public class ClientThread extends Thread {
      * id is the unique identifier of the client;
      *
      */
-    public ClientThread (Socket socket, int port, ReentrantLock reentrantLock) {
+    public ClientThread (int id,Socket socket, int port, ReentrantLock reentrantLock) {
             this.socket = socket;
             this.port = port;
-            this.id = clients.size();
+            this.id = id;
             this.reentrantLock = reentrantLock;
+        try {
+            out = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -46,19 +51,16 @@ public class ClientThread extends Thread {
 
     @Override
     public long getId() {
-        return totalClients;
+        return this.id;
     }
 
     /**
      * Creating Client
      */
-    public void createClient() {
+    public void createClient(ClientThread client) {
         try {
-           //socket = new Socket("localhost", 8080);
-          // out = new DataOutputStream ( socket.getOutputStream ( ) );
-            clients.add(this);
-            //broadcastMessage(id + " joined the chat!");
-            out.writeUTF ( "CREATE" + " " + this.id);
+            clients.add(client);
+            out.writeUTF ( "CREATE" + " " + client.id);
             out.flush ( );
         }catch ( IOException e ) {
             e.printStackTrace ( );
@@ -74,14 +76,9 @@ public class ClientThread extends Thread {
                     reentrantLock.lock();
                     for(ClientThread cli: clients) {
                         if(cli.id == id) {
-                            if (cli.out == null) {
-                                cli.out = new DataOutputStream(cli.socket.getOutputStream());
-                            }
-                            cli.out.writeUTF("MESSAGE" + " " +  id + " " + message);
-                            cli.out.flush();
-                        }else{
-                            System.out.println("No clients with such id!");
-                            System.out.println("Ids available: " + cli.id);
+                            DataOutputStream cliOut = new DataOutputStream(cli.socket.getOutputStream());
+                            cliOut.writeUTF("MESSAGE" + " " +  id + " " + message);
+                            cliOut.flush();
                         }
                     }
                     reentrantLock.unlock();
@@ -92,16 +89,17 @@ public class ClientThread extends Thread {
     }
 
     public void broadcastMessage(String message) {
-        for (ClientThread client : clients) {
-            if (client.id != id) {
+      //  for (ClientThread client : clients) {
+            //if (client.id != id) {
                 try {
-                    client.out.writeUTF("MESSAGE" + " " + message);
-                    client.out.flush();
+                    out = new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF("MESSAGE" + " " + message);
+                    out.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-        }
+            //}
+        //}
     }
 
     public void removeClient(){
@@ -113,11 +111,17 @@ public class ClientThread extends Thread {
     public void run ( ) {
 
             try {
+                totalClients++;
+                socket = new Socket ( "localhost" , 8080 );
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 out = new DataOutputStream(socket.getOutputStream());
+                System.out.println("Creating a client with id: " + this.id);
+                out.writeUTF("Hello, " + this.id );
+                out.flush();
+
                 while (true) {
                     reentrantLock.lock();
-                    clients.add(this);
+                    createClient(this);
                     reentrantLock.unlock();
                     //out.writeUTF("Hello, " + this.id );
                 }

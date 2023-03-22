@@ -59,8 +59,9 @@ public class ClientThread extends Thread {
      */
     public void createClient(ClientThread client) {
         try {
+            out = new DataOutputStream(socket.getOutputStream());
             clients.add(client);
-            out.writeUTF ( "CREATE" + " " + client.id);
+            out.writeUTF ( "CREATE" + " " + client.id + " " + "Foi criado um cliente!");
             out.flush ( );
         }catch ( IOException e ) {
             e.printStackTrace ( );
@@ -72,9 +73,9 @@ public class ClientThread extends Thread {
         try {
             for(ClientThread cli: clients) {
                 if(cli.id == id) {
-                    out = new DataOutputStream(cli.socket.getOutputStream());
-                    out.writeUTF("MESSAGE" + " " + message);
-                    out.flush();
+                    out = new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF("MESSAGE" + " " + cli.id + " " + message);
+                    out.flush( );
                 }
             }
         }catch (IOException e){
@@ -97,11 +98,11 @@ public class ClientThread extends Thread {
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 out = new DataOutputStream(socket.getOutputStream());
                 System.out.println("Creating a client with id: " + this.id);
-                out.writeUTF("Hello, " + this.id );
-                out.flush();
-                reentrantLock.lock();
+                //out.writeUTF("Hello, " + this.id );
+                //out.flush();
+                //reentrantLock.lock();
                 createClient(this);
-                reentrantLock.unlock();
+                //reentrantLock.unlock();
 
             } catch (IOException e) {
                 e.printStackTrace();

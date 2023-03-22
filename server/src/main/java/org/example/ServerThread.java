@@ -97,20 +97,18 @@ public class ServerThread extends Thread {
         }
         @Override
         public void run() {
-        //    while (true) {
+            while (true) {
                 try {
                     in     = new DataInputStream(client.getInputStream());
                     out    = new PrintWriter(client.getOutputStream(),true);
                     String message= in.readUTF();
                     System.out.println("***** "+message+" *****");
-                    out.println(message.toUpperCase());
                     String[] parts = message.split(" ");
                     String action = parts[0];
                     String id = parts[1];
                     String msgReceived = parts[2];
-                    System.out.println("ENTROU AQUI?");
                     System.out.println("Received this action: " + action);
-                    out.println("ACTION: " + action);
+
                     switch (action) {
                         case "CREATE":
                             if (checkServerSize()) {
@@ -126,7 +124,7 @@ public class ServerThread extends Thread {
                     e.printStackTrace();
                 }
 
-          //  }
+            }
         }
 
         public void sendMessageToClient(String message){

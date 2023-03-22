@@ -50,9 +50,10 @@ public class ClientThread extends Thread {
      */
     public void createClient() {
         try {
-            socket = new Socket("localhost", 8080);
-            out = new DataOutputStream ( socket.getOutputStream ( ) );
+           //socket = new Socket("localhost", 8080);
+          // out = new DataOutputStream ( socket.getOutputStream ( ) );
             clients.add(this);
+            //broadcastMessage(id + " joined the chat!");
             out.writeUTF ( "CREATE" + " " + this.id);
             out.flush ( );
         }catch ( IOException e ) {
@@ -71,7 +72,7 @@ public class ClientThread extends Thread {
                             if (cli.out == null) {
                                 cli.out = new DataOutputStream(cli.socket.getOutputStream());
                             }
-                            cli.out.writeUTF("MESSAGE" + id + message);
+                            cli.out.writeUTF("MESSAGE" + " " +  id + " " + message);
                             cli.out.flush();
                         }
                     }
@@ -85,7 +86,7 @@ public class ClientThread extends Thread {
         for (ClientThread client : clients) {
             if (client.id != id) {
                 try {
-                    client.out.writeUTF("MESSAGE " + id + " " + message);
+                    client.out.writeUTF("MESSAGE" + " " + message);
                     client.out.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -101,27 +102,23 @@ public class ClientThread extends Thread {
 
     @Override
     public void run ( ) {
-        try {
-            // get the input stream of the socket
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new DataOutputStream(socket.getOutputStream());
-
-            broadcastMessage(id + " joined the chat!");
-
-            clients.add(this);
-
-            // continuously read messages from the server
-            String message;
-            while ((message = in.readLine()) != null) {
-                broadcastMessage(message);
+        while (true) {
+            try {
+                // get the input stream of the socket
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                out = new DataOutputStream(socket.getOutputStream());
+                clients.add(this);
+                //broadcastMessage(id + " joined the chat!");
+                out.writeUTF ( "CREATE" + " " + this.id);
+                out.flush ( );
+                // continuously read messages from the server
+                String message;
+               // message = in.readLine();
+               // System.out.println("MESG RECEBIDA: " + message);
+               // broadcastMessage(message);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            // close the input stream and the socket when the loop ends
-            in.close();
-            socket.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

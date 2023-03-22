@@ -40,28 +40,37 @@ public class ServerThread extends Thread {
         connectedClients = new HashMap<>(maxClients);
         this.executor = Executors.newFixedThreadPool ( nWorkers );
         try {
-            server = new ServerSocket ( 8080 );
+            server = new ServerSocket (port);
         } catch ( IOException e ) {
             e.printStackTrace ( );
         }
     }
 
     public static void broadcastMessage(String message) throws IOException {
-
         for (int key : connectedClients.keySet()) {
             Socket client = connectedClients.get(key);
-            OutputStream cliOut = client.getOutputStream();
-            OutputStreamWriter cliOutWrit = new OutputStreamWriter(cliOut);
-            BufferedWriter bw = new BufferedWriter(cliOutWrit);
-            bw.write(message);
-            bw.flush();
+            if(client.isConnected()) {
+                System.out.println("MESSAGE: "+ message);
+                OutputStream cliOut = client.getOutputStream();
+                DataOutputStream out = new DataOutputStream(client.getOutputStream());
+                out.writeUTF(message);
+               // cliOut.write(message.getBytes());
+                //OutputStreamWriter cliOutWrit = new OutputStreamWriter(cliOut);
+                //BufferedWriter bw = new BufferedWriter(cliOutWrit);
+                out.flush();
+                //bw.write(message);
+                //bw.flush();
+            }
         }
     }
 
     @Override
     public void run ( ) {
-        processRequests();
+        while (true) {
+            processRequests();
+        }
     }
+
     private void processRequests ( ) {
         Thread t = new Thread ( ( ) -> {
             while ( true ) {
@@ -69,6 +78,7 @@ public class ServerThread extends Thread {
                     // Reads the request
                     Socket client = server.accept ( );
                     ClientHandler clientHandler = new ClientHandler(client);
+                    connections.add(clientHandler);
                     executor.submit(clientHandler);
                 } catch ( IOException e ) {
                     throw new RuntimeException ( e );
@@ -99,18 +109,9 @@ public class ServerThread extends Thread {
                     String[] parts = messageRecieved.split(" ");
                     String action = parts[0];
                     String id = parts[1];
-                    if(Objects.equals(action, "CREATE")){
-                        if (checkServerSize()) {
-                            connectClient(Integer.parseInt(id), client);
-                        } else {
-                            sendMessageToClient("Server is Full!\n");
-                        }
-                    } else if (Objects.equals(action, "MESSAGE")) {
-                        System.out.println("Vou enviar mensagem!\n");
-                        broadcastMessage(messageRecieved);
-                    }
-/**
-                    switch (action) {
+                    String msgReceived = parts[2];
+                    System.out.println("ACTION: " + action);
+                    switch (action){
                         case "CREATE":
                             if (checkServerSize()) {
                                 connectClient(Integer.parseInt(id), client);
@@ -119,22 +120,11 @@ public class ServerThread extends Thread {
                             }
                             break;
                         case "MESSAGE":
-                            System.out.println("Vou enviar mensagem!\n");
-                            broadcastMessage(messageRecieved);
-                            break;
-                        default:
-                            break;
+                            broadcastMessage(msgReceived);
                     }
- */
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
-                try {
-                    client.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
 
@@ -142,7 +132,7 @@ public class ServerThread extends Thread {
             out.println(message);
         }
 
-        public void connectClient(int id, Socket client){
+        public void connectClient(int id, Socket client) throws IOException {
             connectedClients.put(id,client);
             for(Map.Entry<Integer, Socket> cli : connectedClients.entrySet()){
                 System.out.println("ID: " + cli.getKey() + " Socket: " + cli.getValue());
@@ -152,7 +142,6 @@ public class ServerThread extends Thread {
 
         public boolean checkServerSize() throws IOException {
             if(connectedClients.size() < maxClients){
-                System.out.println("Entrou no check");
                 return true;
             }else{
                 return false;

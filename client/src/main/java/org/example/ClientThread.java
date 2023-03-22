@@ -69,42 +69,23 @@ public class ClientThread extends Thread {
     }
 
     public void sendMessage(int id,String message){
-            try {
-                if(clients.isEmpty()){
-                    System.out.println("There are no clients on the chat!\n");
-                }else{
-                    reentrantLock.lock();
-                    for(ClientThread cli: clients) {
-                        if(cli.id == id) {
-                            DataOutputStream cliOut = new DataOutputStream(cli.socket.getOutputStream());
-                            cliOut.writeUTF("MESSAGE" + " " +  id + " " + message);
-                            cliOut.flush();
-                        }
-                    }
-                    reentrantLock.unlock();
-                }
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-    }
-
-    public void broadcastMessage(String message) {
-      //  for (ClientThread client : clients) {
-            //if (client.id != id) {
-                try {
-                    out = new DataOutputStream(socket.getOutputStream());
+        try {
+            for(ClientThread cli: clients) {
+                if(cli.id == id) {
+                    out = new DataOutputStream(cli.socket.getOutputStream());
                     out.writeUTF("MESSAGE" + " " + message);
                     out.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            //}
-        //}
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
+
 
     public void removeClient(){
         clients.remove(this);
-        broadcastMessage(id + " left the chat!");
+        sendMessage(id , " left the chat!");
     }
 
     @Override
@@ -118,13 +99,9 @@ public class ClientThread extends Thread {
                 System.out.println("Creating a client with id: " + this.id);
                 out.writeUTF("Hello, " + this.id );
                 out.flush();
-
-                while (true) {
-                    reentrantLock.lock();
-                    createClient(this);
-                    reentrantLock.unlock();
-                    //out.writeUTF("Hello, " + this.id );
-                }
+                reentrantLock.lock();
+                createClient(this);
+                reentrantLock.unlock();
 
             } catch (IOException e) {
                 e.printStackTrace();

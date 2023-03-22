@@ -16,6 +16,8 @@ public class ServerThread extends Thread {
 
     private ServerSocket server;
 
+    private PrintWriter out;
+
     private static int maxClients;
 
     private static ArrayList<ClientHandler> connections;
@@ -46,13 +48,12 @@ public class ServerThread extends Thread {
         }
     }
 
-    public static void broadcastMessage(String message) throws IOException {
+    public void broadcastMessage(String message) throws IOException {
+        System.out.println("Entrei=?");
         for (int key : connectedClients.keySet()) {
             Socket client = connectedClients.get(key);
             if(client.isConnected()) {
-                System.out.println("MESSAGE: "+ message);
-                //DataOutputStream out = new DataOutputStream(client.getOutputStream());
-                PrintWriter sendMessage = new PrintWriter(client.getOutputStream(),true);
+                PrintWriter sendMessage = new PrintWriter(client.getOutputStream(), true);
                 sendMessage.println(message);
             }
         }
@@ -97,12 +98,11 @@ public class ServerThread extends Thread {
         }
         @Override
         public void run() {
-            while (true) {
-                try {
-                    in     = new DataInputStream(client.getInputStream());
-                    out    = new PrintWriter(client.getOutputStream(),true);
-                    String message= in.readUTF();
-                    System.out.println("***** "+message+" *****");
+            try (DataInputStream in = new DataInputStream(client.getInputStream());
+                 PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+                while (true) {
+                    String message = in.readUTF();
+                    System.out.println("***** " + message + " *****");
                     String[] parts = message.split(" ");
                     String action = parts[0];
                     String id = parts[1];
@@ -120,10 +120,9 @@ public class ServerThread extends Thread {
                         case "MESSAGE":
                             broadcastMessage(msgReceived);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -136,6 +135,7 @@ public class ServerThread extends Thread {
             for(Map.Entry<Integer, Socket> cli : connectedClients.entrySet()){
                 System.out.println("ID: " + cli.getKey() + " Socket: " + cli.getValue());
             }
+            broadcastMessage("Server: A client with id " + id + " connected to the server!\n");
         }
 
 

@@ -3,17 +3,16 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
     public static void main ( String[] args ) throws IOException {
 
         Semaphore   sem = new Semaphore(1);
+        ReentrantLock ClientLock = new ReentrantLock();
+
 
         Socket socket = new Socket("localhost", 8080);
-
-        ClientThread cli = new ClientThread(socket,8080);
-
-
 
         Scanner option = new Scanner(System.in);
         int choice = 0;
@@ -30,7 +29,7 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("Option 1 selected.");
-                    ClientThread client = new ClientThread ( socket,8080);
+                    ClientThread client = new ClientThread ( socket,8080,ClientLock);
                     client.start();
                     //client.createClient();
 
@@ -44,8 +43,8 @@ public class Main {
                     String message = res.nextLine();
                     System.out.println("Id inserted: " + id);
                     System.out.println("Message to be sent: " + message);
-                    //ClientThread clientMessage = new ClientThread(socket,8080);
-                    cli.sendMessage(id,message);
+                    ClientThread clientMessage = new ClientThread(socket,8080,ClientLock);
+                    clientMessage.sendMessage(id,message);
                     break;
                 case 3:
                     System.out.println("Option 3 selected.");

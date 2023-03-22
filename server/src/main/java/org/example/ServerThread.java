@@ -51,15 +51,9 @@ public class ServerThread extends Thread {
             Socket client = connectedClients.get(key);
             if(client.isConnected()) {
                 System.out.println("MESSAGE: "+ message);
-                OutputStream cliOut = client.getOutputStream();
-                DataOutputStream out = new DataOutputStream(client.getOutputStream());
-                out.writeUTF(message);
-               // cliOut.write(message.getBytes());
-                //OutputStreamWriter cliOutWrit = new OutputStreamWriter(cliOut);
-                //BufferedWriter bw = new BufferedWriter(cliOutWrit);
-                out.flush();
-                //bw.write(message);
-                //bw.flush();
+                //DataOutputStream out = new DataOutputStream(client.getOutputStream());
+                PrintWriter sendMessage = new PrintWriter(client.getOutputStream(),true);
+                sendMessage.println(message);
             }
         }
     }
@@ -92,17 +86,17 @@ public class ServerThread extends Thread {
 
     class ClientHandler implements Runnable{
 
-        private Socket client;
+        private Socket clientHandel;
         private DataInputStream  in;
         private PrintWriter out;
         public ClientHandler(Socket client){
-            this.client = client;
+            this.clientHandel = client;
         }
         @Override
         public void run() {
             try {
-                out = new PrintWriter(client.getOutputStream(),true);
-                in = new DataInputStream(client.getInputStream());
+                out = new PrintWriter(clientHandel.getOutputStream(),true);
+                in = new DataInputStream(clientHandel.getInputStream());
 
                 while (true) {
                     String messageRecieved = in.readUTF();
@@ -110,11 +104,11 @@ public class ServerThread extends Thread {
                     String action = parts[0];
                     String id = parts[1];
                     String msgReceived = parts[2];
-                    System.out.println("ACTION: " + action);
+                    out.println("ACTION: " + action);
                     switch (action){
                         case "CREATE":
                             if (checkServerSize()) {
-                                connectClient(Integer.parseInt(id), client);
+                                connectClient(Integer.parseInt(id), clientHandel);
                             } else {
                                 sendMessageToClient("Server is Full!\n");
                             }

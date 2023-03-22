@@ -4,12 +4,15 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
  * ClientThread class represents each client that will interact with the server
  */
 public class ClientThread extends Thread {
+
+    private final ReentrantLock reentrantLock;
     private int port;
     private int id;
     private int totalClients;
@@ -29,10 +32,11 @@ public class ClientThread extends Thread {
      * id is the unique identifier of the client;
      *
      */
-    public ClientThread (Socket socket, int port) {
+    public ClientThread (Socket socket, int port, ReentrantLock reentrantLock) {
             this.socket = socket;
             this.port = port;
             this.id = clients.size();
+            this.reentrantLock = reentrantLock;
     }
 
 
@@ -67,6 +71,7 @@ public class ClientThread extends Thread {
                 if(clients.isEmpty()){
                     System.out.println("There are no clients on the chat!\n");
                 }else{
+                    reentrantLock.lock();
                     for(ClientThread cli: clients) {
                         if(cli.id == id) {
                             if (cli.out == null) {
@@ -74,8 +79,12 @@ public class ClientThread extends Thread {
                             }
                             cli.out.writeUTF("MESSAGE" + " " +  id + " " + message);
                             cli.out.flush();
+                        }else{
+                            System.out.println("No clients with such id!");
+                            System.out.println("Ids available: " + cli.id);
                         }
                     }
+                    reentrantLock.unlock();
                 }
             }catch (IOException e){
                 e.printStackTrace();
@@ -102,23 +111,21 @@ public class ClientThread extends Thread {
 
     @Override
     public void run ( ) {
-        while (true) {
+
             try {
-                // get the input stream of the socket
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 out = new DataOutputStream(socket.getOutputStream());
-                clients.add(this);
-                //broadcastMessage(id + " joined the chat!");
-                out.writeUTF ( "CREATE" + " " + this.id);
-                out.flush ( );
-                // continuously read messages from the server
-                String message;
-               // message = in.readLine();
-               // System.out.println("MESG RECEBIDA: " + message);
-               // broadcastMessage(message);
+                while (true) {
+                    reentrantLock.lock();
+                    clients.add(this);
+                    reentrantLock.unlock();
+                    //out.writeUTF("Hello, " + this.id );
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+
     }
+
 }

@@ -13,29 +13,18 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Main {
     public static void main ( String[] args ) throws IOException {
 
-        Semaphore sem = new Semaphore(1);
         ReentrantLock ClientLock = new ReentrantLock();
         int totalClients = 0;
-        Socket socket = new Socket("localhost", 8080);
         Scanner scanner = new Scanner(System.in);
         Scanner option = new Scanner(System.in);
         Scanner res = new Scanner(System.in);
 
-        ClientThread clientCreate1 = new ClientThread(totalClients,socket,8080,ClientLock);
+        ClientThread clientCreate1 = new ClientThread(totalClients,8080,ClientLock);
         totalClients = totalClients + 1;
         clientCreate1.start();
-        ClientThread clientCreate2 = new ClientThread(totalClients,socket,8080,ClientLock);
+        ClientThread clientCreate2 = new ClientThread(totalClients,8080,ClientLock);
         totalClients = totalClients + 1;
         clientCreate2.start();
-        ClientThread clientCreate3 = new ClientThread(totalClients,socket,8080,ClientLock);
-        totalClients = totalClients + 1;
-        clientCreate3.start();
-        ClientThread clientCreate4 = new ClientThread(totalClients,socket,8080,ClientLock);
-        totalClients = totalClients + 1;
-        clientCreate4.start();
-        ClientThread clientCreate5 = new ClientThread(totalClients,socket,8080,ClientLock);
-        totalClients = totalClients + 1;
-        clientCreate5.start();
 
         System.out.println("                                                         ");
         System.out.println("******************* Chat Room PA G6 *********************");
@@ -49,7 +38,7 @@ public class Main {
             String input = scanner.nextLine(); // read user input
             if (input.startsWith("/create")) {
                 // Create a new client
-                ClientThread clientCreate = new ClientThread(totalClients,socket,8080,ClientLock);
+                ClientThread clientCreate = new ClientThread(totalClients,8080,ClientLock);
                 totalClients = totalClients + 1;
                 clientCreate.start();
             } else if (input.startsWith("/message")) {
@@ -59,13 +48,13 @@ public class Main {
                 int id = option.nextInt();
                 System.out.print("Insert Message: ");
                 String message = res.nextLine();
-                ClientThread clientThread = new ClientThread(totalClients,socket,8080,ClientLock);
+                ClientThread clientThread = new ClientThread(totalClients,8080,ClientLock);
                 clientThread.sendMessage(2,id, message);
 
             } else if (input.startsWith("/remove")) {
                 System.out.print("Insert id of the client you wish to remove: \n");
                 int id = option.nextInt();
-                ClientThread clientToRemove = new ClientThread(totalClients,socket,8080,ClientLock);
+                ClientThread clientToRemove = new ClientThread(totalClients,8080,ClientLock);
                 clientToRemove.removeClient(id);
             }else if(input.startsWith("/quit")){
                 break;

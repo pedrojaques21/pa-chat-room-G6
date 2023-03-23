@@ -2,7 +2,9 @@ package org.example;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -31,12 +33,12 @@ public class ClientThread extends Thread {
      * id is the unique identifier of the client;
      *
      */
-    public ClientThread (int id,Socket socket, int port, ReentrantLock reentrantLock) {
-            this.socket = socket;
+    public ClientThread (int id,int port, ReentrantLock reentrantLock) {
             this.port = port;
             this.id = id;
             this.reentrantLock = reentrantLock;
         try {
+            socket = new Socket("localhost",port);
             out = new DataOutputStream(socket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
@@ -51,6 +53,7 @@ public class ClientThread extends Thread {
 
     @Override
     public long getId() {
+
         return this.id;
     }
 
@@ -86,23 +89,16 @@ public class ClientThread extends Thread {
         }
     }
 
-    public void removeClient(int id) {
+    public void removeClient(int id) throws IOException {
         boolean encontrou = false;
-        for (ClientThread client : clients) {
+        Iterator<ClientThread> iterator = clients.iterator();
+        while (iterator.hasNext()) {
+            ClientThread client = iterator.next();
             if (client.id == id) {
-                clients.remove(client);
-                for (ClientThread cl : clients) {
-                    System.out.println("Connected Clients: " + cl.id);
-                    encontrou=true;
-                }
-                //sendMessage(3,client.id,"REMOVE" );
-                /**
-                 try {
-                 client.socket.close();
-                 } catch (IOException e) {
-                 e.printStackTrace();
-                 }*/
-
+                sendMessage(3,client.id,"REMOVE" );
+                iterator.remove();
+                client.socket.close();
+                encontrou = true;
             }
         }
         if (!encontrou) {
@@ -113,7 +109,6 @@ public class ClientThread extends Thread {
     @Override
     public void run ( ) {
         createClient(this);
-
         while (true) {
             try {
                 totalClients++;

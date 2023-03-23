@@ -18,7 +18,7 @@ public class ServerThread extends Thread {
 
     private ServerSocket server;
 
-    private PrintWriter out;
+    private Socket socket;
 
     private boolean finish;
 
@@ -38,7 +38,6 @@ public class ServerThread extends Thread {
     }
 
 
-
     /**
      * Each Server is constructed using the port number where it will be connected.
      *
@@ -53,16 +52,30 @@ public class ServerThread extends Thread {
         this.executor = Executors.newFixedThreadPool(nWorkers);
         this.queue = new LinkedList<>();
         finish = false;
+        try {
+            server = new ServerSocket(this.port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         maxClientsSem = new Semaphore(maxClients);
     }
 
     public void broadcastMessage(int action,int id,String message) throws IOException {
+        for(int idReceived : connectedClients.keySet()){
+            int idComparar = idReceived;
+            if(idComparar == id){
+
+            }
+        }
         for (int key : connectedClients.keySet()) {
+            int idClient = key;
             Socket client = connectedClients.get(key);
             if(client.isConnected()) {
                 PrintWriter sendMessage = new PrintWriter(client.getOutputStream(), true);
                 if(action == 1) {
-                    sendMessage.println("Client " + id + ": " + message);
+                    if(idClient != id) {
+                        sendMessage.println("Client " + id + ": " + message + " sent to the client " + idClient);
+                    }
                 } else if (action == 2) {
                     sendMessage.println(message);
                 }
@@ -70,24 +83,23 @@ public class ServerThread extends Thread {
         }
     }
 
+    public void sendMessage(String message,Socket client) throws IOException {
+        PrintWriter sendMessage = new PrintWriter(client.getOutputStream(), true);
+
+        sendMessage.println("Server: " + message);
+    }
+
     @Override
     public void run ( ) {
-      //processRequests();
-        System.out.println("TESTING");
-      try {
-          server = new ServerSocket (port);
-          while (!finish){
-              Socket client = server.accept();
-              if(maxClientsSem.availablePermits()>0) {
-                  ClientHandler handler = new ClientHandler(client);
+      while (true) {
+          try {
+                  Socket clientSocket = server.accept();
+                  ClientHandler handler = new ClientHandler(clientSocket);
                   connections.add(handler);
                   executor.submit(handler);
-              }else {
-                  broadcastMessage(2,0,"Server is full!");
-              }
+          } catch (Exception e) {
+              e.printStackTrace();
           }
-      }catch (Exception e){
-          e.printStackTrace();
       }
     }
 
@@ -121,7 +133,6 @@ public class ServerThread extends Thread {
         public void run() {
             try (DataInputStream in = new DataInputStream(client.getInputStream());
                  PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
-                //maxClientsSem.acquire();
                 while (running) {
                     String message = in.readUTF();
                     System.out.println("***** " + message + " *****");
@@ -137,11 +148,12 @@ public class ServerThread extends Thread {
                             if(maxClientsSem.tryAcquire()) {
                                 connectClient(Integer.parseInt(id), client);
                             }else{
-                                broadcastMessage(2,0,"Server is full!");
+
                                 queue.add(client);
                                 for(Socket cli: queue){
                                     System.out.println("EM ESPERA: " + cli);
                                 }
+                                sendMessage("Server is full, wait for someone to quit!",client);
                             }
                             break;
                         case "MESSAGE":
@@ -154,8 +166,6 @@ public class ServerThread extends Thread {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                maxClientsSem.release();
             }
         }
 
@@ -173,6 +183,7 @@ public class ServerThread extends Thread {
                 if(cli.getKey() == id) {
                     System.out.println("Removing the client with id: " + cli.getKey());
                     connectedClients.remove(cli.getKey());
+                    broadcastMessage(2,cli.getKey(),"Server: Client " + cli.getKey()+ " left the chat!\n");
                 }else{
                     broadcastMessage(2,id,"Server: Does not existe a client with that ID!\n");
                 }

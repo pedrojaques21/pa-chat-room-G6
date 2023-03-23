@@ -61,32 +61,52 @@ public class ClientThread extends Thread {
         try {
             clients.add(client);
             reentrantLock.lock();
-            out.writeUTF("CREATE" + " " + client.id + " " + "Foi criado um cliente!");
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+            sendMessage(1,client.id,"Foi criado um cliente!");
         } finally {
             reentrantLock.unlock();
         }
 
     }
 
-    public void sendMessage(int id,String message){
+    public void sendMessage(int action,int id,String message){
         try {
-            out.writeUTF("MESSAGE" + " " + id + " " + message);
-            out.flush();
+            if(action==1){
+                out.writeUTF("CREATE" + " " + id + " " + message);
+                out.flush();
+            } else if (action == 2) {
+                out.writeUTF("MESSAGE" + " " + id + " " + message);
+                out.flush();
+            } else if (action == 3) {
+                out.writeUTF("REMOVE" + " " + id + " " + message);
+                out.flush();
+            }
+
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
+    public void removeClient(int id) {
+        boolean encontrou = false;
+        for (ClientThread client : clients) {
+            if (client.id == id) {
+                clients.remove(client);
+                for (ClientThread cl : clients) {
+                    System.out.println("Connected Clients: " + cl.id);
+                    encontrou=true;
+                }
+                //sendMessage(3,client.id,"REMOVE" );
+                /**
+                 try {
+                 client.socket.close();
+                 } catch (IOException e) {
+                 e.printStackTrace();
+                 }*/
 
-    public void removeClient(ClientThread client){
-        clients.remove(client);
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            }
+        }
+        if (!encontrou) {
+            sendMessage(3, id, "Does not existe a client with that ID!");
         }
     }
 

@@ -10,6 +10,7 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
     // Reads configuration file and gets correct server configuration
     private static ServerConfig configFile;
+    private static MessageFilter messageFilter;
 
     static {
         try {
@@ -18,6 +19,8 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
+
+
 
     public static void main ( String[] args ) throws IOException {
 
@@ -60,6 +63,7 @@ public class Main {
                 case 3:
                     // Update Message Filters
                     System.out.println("\nExecuting option 3...\n");
+                    updateMessageFilter();
                     break;
                 case 4:
                     // Stop the Server
@@ -91,5 +95,30 @@ public class Main {
         value = scanner.nextLine();
 
         configFile.setProperty( key, value );
+    }
+
+    /**
+     * Method to update, add or remove, words in the server/filter.txt file
+     * That purpose is accomplished with the instance of class MessageFilter,
+     * That implements the interface Runnable
+     */
+    private static void updateMessageFilter ( ) {
+
+        int option;
+        String word;
+
+        System.out.println("Add(1) or remove(2) a word? (1/2): ");
+        option = scanner.nextInt();
+
+        System.out.println("Word to " + ((option == 1) ? "add: " : "remove: "));
+        word = scanner.next();
+
+        // Creating and starting a thread for that job,
+        messageFilter = new MessageFilter( option, word);
+        Thread threadFilter = new Thread(messageFilter);
+        threadFilter.start();
+
+
+
     }
 }

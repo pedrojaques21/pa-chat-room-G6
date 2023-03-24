@@ -14,6 +14,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ClientThread extends Thread {
 
     private final ReentrantLock reentrantLock;
+
+    private final LoggerThread logger;
+    private boolean running;
     private int port;
     private int id;
     private int totalClients;
@@ -33,10 +36,12 @@ public class ClientThread extends Thread {
      * id is the unique identifier of the client;
      *
      */
-    public ClientThread (int id,int port, ReentrantLock reentrantLock) {
+    public ClientThread (int id,int port, ReentrantLock reentrantLock,LoggerThread logger) {
             this.port = port;
             this.id = id;
             this.reentrantLock = reentrantLock;
+            this.running = true;
+            this.logger = logger;
         try {
             socket = new Socket("localhost",port);
             out = new DataOutputStream(socket.getOutputStream());
@@ -74,14 +79,23 @@ public class ClientThread extends Thread {
     public void sendMessage(int action,int id,String message){
         try {
             if(action==1){
+                reentrantLock.lock();
                 out.writeUTF("CREATE" + " " + id + " " + message);
                 out.flush();
+                logger.logMessage("CREATE" + " " + id + " " + "CONNECTED");
+                reentrantLock.unlock();
             } else if (action == 2) {
+                reentrantLock.lock();
                 out.writeUTF("MESSAGE" + " " + id + " " + message);
                 out.flush();
+                logger.logMessage("MESSAGE" + " " + id + " " + message);
+                reentrantLock.unlock();
             } else if (action == 3) {
+                reentrantLock.lock();
                 out.writeUTF("REMOVE" + " " + id + " " + message);
                 out.flush();
+                logger.logMessage("REMOVE" + " " + id + " " + "DISCONNECTED");
+                reentrantLock.unlock();
             }
 
         }catch (IOException e){
@@ -89,41 +103,39 @@ public class ClientThread extends Thread {
         }
     }
 
-    public void removeClient(int id) throws IOException {
-        boolean encontrou = false;
-        Iterator<ClientThread> iterator = clients.iterator();
-        while (iterator.hasNext()) {
-            ClientThread client = iterator.next();
-            if (client.id == id) {
-                sendMessage(3,client.id,"REMOVE" );
-                iterator.remove();
-                client.socket.close();
-                encontrou = true;
-            }
-        }
-        if (!encontrou) {
-            sendMessage(3, id, "Does not existe a client with that ID!");
-        }
-    }
-
     @Override
-    public void run ( ) {
+    public void run() {
         createClient(this);
-        while (true) {
-            try {
-                totalClients++;
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String message;
-
-                while ((message = in.readLine()) != null) {
+        try {
+            totalClients++;
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String message;
+            while (running) {
+                if (socket.isClosed()) {
+                    break;
+                }
+                message = in.readLine();
+                if (message != null) {
                     System.out.println(message);
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        shutdown();
+    }
 
+    public void shutdown() {
+        running = false;
+        try {
+            in.close();
+            out.close();
+            if (!socket.isClosed()){
+                socket.close();
+            }
+        } catch (IOException e) {
+            //Cant Handle
+        }
     }
 
 }

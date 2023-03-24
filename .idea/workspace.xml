@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48097be5-3420-4453-b406-f849ba20e035" name="Changes" comment="Clients waiting on a semaphore to get in server. Remove client working.">
+    <list default="true" id="48097be5-3420-4453-b406-f849ba20e035" name="Changes" comment="All clients already have different sockets. Trying to fix a bug where slave threads never end.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/org/example/ClientThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/org/example/ClientThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/org/example/LoggerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/org/example/LoggerThread.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/org/example/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/org/example/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/server.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/org/example/ServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/org/example/ServerThread.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -351,7 +352,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679584579324</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="All clients already have different sockets. Trying to fix a bug where slave threads never end.">
+      <created>1679604372381</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1679604372381</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -388,7 +396,8 @@
     <MESSAGE value="Send Messages to server fixed." />
     <MESSAGE value="Client Menu changed, message flow working." />
     <MESSAGE value="Clients waiting on a semaphore to get in server. Remove client working." />
-    <option name="LAST_COMMIT_MESSAGE" value="Clients waiting on a semaphore to get in server. Remove client working." />
+    <MESSAGE value="All clients already have different sockets. Trying to fix a bug where slave threads never end." />
+    <option name="LAST_COMMIT_MESSAGE" value="All clients already have different sockets. Trying to fix a bug where slave threads never end." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

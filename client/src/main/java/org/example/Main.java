@@ -18,11 +18,13 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Scanner option = new Scanner(System.in);
         Scanner res = new Scanner(System.in);
+        String logFilePath = "server/server.log";
+        LoggerThread loggerThread = new LoggerThread(logFilePath);
 
-        ClientThread clientCreate1 = new ClientThread(totalClients,8080,ClientLock);
+        ClientThread clientCreate1 = new ClientThread(totalClients,8080,ClientLock,loggerThread);
         totalClients = totalClients + 1;
         clientCreate1.start();
-        ClientThread clientCreate2 = new ClientThread(totalClients,8080,ClientLock);
+        ClientThread clientCreate2 = new ClientThread(totalClients,8080,ClientLock,loggerThread);
         totalClients = totalClients + 1;
         clientCreate2.start();
 
@@ -38,7 +40,7 @@ public class Main {
             String input = scanner.nextLine(); // read user input
             if (input.startsWith("/create")) {
                 // Create a new client
-                ClientThread clientCreate = new ClientThread(totalClients,8080,ClientLock);
+                ClientThread clientCreate = new ClientThread(totalClients,8080,ClientLock,loggerThread);
                 totalClients = totalClients + 1;
                 clientCreate.start();
             } else if (input.startsWith("/message")) {
@@ -48,14 +50,14 @@ public class Main {
                 int id = option.nextInt();
                 System.out.print("Insert Message: ");
                 String message = res.nextLine();
-                ClientThread clientThread = new ClientThread(totalClients,8080,ClientLock);
+                ClientThread clientThread = new ClientThread(totalClients,8080,ClientLock,loggerThread);
                 clientThread.sendMessage(2,id, message);
 
             } else if (input.startsWith("/remove")) {
                 System.out.print("Insert id of the client you wish to remove: \n");
                 int id = option.nextInt();
-                ClientThread clientToRemove = new ClientThread(totalClients,8080,ClientLock);
-                clientToRemove.removeClient(id);
+                ClientThread clientToRemove = new ClientThread(totalClients,8080,ClientLock,loggerThread);
+                clientToRemove.sendMessage(3,id,"REMOVE" );
             }else if(input.startsWith("/quit")){
                 break;
             }

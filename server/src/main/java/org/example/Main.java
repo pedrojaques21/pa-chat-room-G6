@@ -1,6 +1,5 @@
 package org.example;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -100,25 +99,19 @@ public class Main {
     /**
      * Method to update, add or remove, words in the server/filter.txt file
      * That purpose is accomplished with the instance of class MessageFilter,
-     * That implements the interface Runnable
+     * that implements the interface Runnable
      */
     private static void updateMessageFilter ( ) {
 
-        int option;
-        String word;
+        String word = null;
 
-        System.out.println("Add(1) or remove(2) a word? (1/2): ");
-        option = scanner.nextInt();
-
-        System.out.println("Word to " + ((option == 1) ? "add: " : "remove: "));
+        System.out.println("Word to add or remove? ");
         word = scanner.next();
 
         // Creating and starting a thread for that job,
-        messageFilter = new MessageFilter( option, word);
-        Thread threadFilter = new Thread(messageFilter);
-        threadFilter.start();
-
-
+        messageFilter = new MessageFilter(word);
+        Thread threadWords = new Thread(messageFilter);
+        threadWords.start();
 
     }
 }

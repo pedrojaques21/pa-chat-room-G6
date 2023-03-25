@@ -265,3 +265,21 @@ public class ServerThread extends Thread {
 
 }
 
+
+
+        /**
+         * To implement filtering the messages
+         *
+         *  public static String parseMessage (String message) {
+         *
+         *             // Creating and starting a thread for that job,
+         *             messageFilter = new MessageFilter(message);
+         *             Thread threadFilter = new Thread(messageFilter);
+         *             threadFilter.start();
+         *
+         *             return message;
+         *
+         *     }
+         */
+
+

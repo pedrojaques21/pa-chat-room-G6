@@ -27,7 +27,7 @@ public class ServerThread extends Thread {
 
     private static ArrayList<ClientHandler> connections;
 
-    private final Queue<Socket> queue;
+    private final Queue<ClientHandler> queue;
 
     private static Map<Integer, Socket> connectedClients;
 
@@ -62,17 +62,19 @@ public class ServerThread extends Thread {
     }
 
     public void broadcastMessage(int action, int id, String message) throws IOException {
-        for (int key : connectedClients.keySet()) {
-            int idClient = key;
-            Socket client = connectedClients.get(key);
-            if (!client.isClosed()) {
-                PrintWriter sendMessage = new PrintWriter(client.getOutputStream(), true);
-                if (action == 1) {
-                    if (idClient != id) {
-                        sendMessage.println("Client " + id + ": " + message + ", sent to the client " + idClient);
+        if(connectedClients.containsKey(id)) {
+            for (int key : connectedClients.keySet()) {
+                int idClient = key;
+                Socket client = connectedClients.get(key);
+                if (!client.isClosed()) {
+                    PrintWriter sendMessage = new PrintWriter(client.getOutputStream(), true);
+                    if (action == 1) {
+                        if (idClient != id) {
+                            sendMessage.println("Client " + id + ": " + message);
+                        }
+                    } else if (action == 2) {
+                        sendMessage.println(message);
                     }
-                } else if (action == 2) {
-                    sendMessage.println(message + idClient);
                 }
             }
         }
@@ -81,7 +83,7 @@ public class ServerThread extends Thread {
     public void sendMessage(String message, Socket client, int idRecebido, int action) throws IOException {
         if (action == 1) {
             PrintWriter sendMessage = new PrintWriter(client.getOutputStream(), true);
-            sendMessage.println("Server: " + message + ", sento to client " + idRecebido);
+            sendMessage.println("Server: " + message );
         } else if (action == 2) {
             PrintWriter sendMessage = new PrintWriter(client.getOutputStream(), true);
             sendMessage.println("Server: " + message);
@@ -91,45 +93,65 @@ public class ServerThread extends Thread {
 
     @Override
     public void run() {
-        processRequest();
-        processReplies();
+        while (!server.isClosed()) {
+            processRequest();
+
+        }
     }
 
-    public void processRequest() {
+    public void closeServerSocket() {
         try {
-            while (true) {
-
-                while (!queue.isEmpty() && connectedClients.size() < maxClients) {
-                    System.out.println("Entrou na queue");
-                    Socket client = queue.poll();
-                    ClientHandler handler = new ClientHandler(client);
-                    connections.add(handler);
-                    executor.submit(handler);
-                }
-
-                System.out.println("Novo Request");
-                Socket clientSocket = server.accept();
-                ClientHandler handler = new ClientHandler(clientSocket);
-                connections.add(handler);
-                executor.submit(handler);
+            if (server != null) {
+                server.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void processReplies() {
-        while (true) {
-            lockQueueReplies.lock();
-            while (!queue.isEmpty()) {
-                System.out.println("Entrou na queue");
-                Socket client = queue.poll();
-                ClientHandler handler = new ClientHandler(client);
+
+    public void processRequest() {
+        Thread t = new Thread(()->{while (true) {
+            try {
+                if(!queue.isEmpty() && connectedClients.size() < maxClients){
+                    processReplies();
+                }
+                Socket clientSocket = server.accept();
+                ClientHandler handler = new ClientHandler(clientSocket,0);
                 connections.add(handler);
                 executor.submit(handler);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            lockQueueReplies.unlock();
-        }
+        }});
+        t.start();
+    }
+
+    private void processReplies() throws IOException {
+        Thread t = new Thread(()->{
+            while (true) {
+                lockQueueReplies.lock();
+                    try {
+                        ClientHandler client = queue.peek();
+                        if (client != null) {
+                            System.out.println("CLI " + client);
+                            ClientHandler handler = new ClientHandler(client.client, client.id);
+                            queue.poll(); // remove the client from the queue after assigning it to a thread
+                            handler.connectClient(client.id,client.client);
+                            connections.add(handler);
+                            executor.submit(handler);
+
+                        } else {
+                            // queue is empty, handle it accordingly
+                        }
+
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                lockQueueReplies.unlock();
+            }
+        });
+        t.start();
     }
 
 
@@ -139,64 +161,56 @@ public class ServerThread extends Thread {
         DataInputStream in;
         PrintWriter out;
 
+        private int id;
+
         private boolean running;
 
-        public ClientHandler(Socket client) {
+        public ClientHandler(Socket client,int id) throws IOException {
             this.client = client;
             this.running = true;
+            this.in = new DataInputStream(client.getInputStream());
+            this.out = new PrintWriter(client.getOutputStream(),true);
+            this.id = id;
         }
 
         @Override
         public void run() {
             try {
-                in = new DataInputStream(client.getInputStream());
-                out = new PrintWriter(client.getOutputStream(), true);
-                //   while (running) {
                 String message;
                 while (running) {
                     message = in.readUTF();
-                    System.out.println("***** " + message + " *****");
+                    System.out.println("\n***** " + message + " *****");
                     String[] messageComponents = message.split("\\s+");
                     // Extract the message components
                     String action = messageComponents[0];
                     String id = messageComponents[1];
                     String msgReceived = message.substring(message.indexOf(messageComponents[2]));
-                    System.out.println("Received this action: " + action);
-                    System.out.println("SEM: " + maxClientsSem.availablePermits());
                     switch (action) {
                         case "CREATE":
-                            if (maxClientsSem.tryAcquire()) {
-                                connectClient(Integer.parseInt(id), client);
-                                System.out.println("VOLTEI DPS DO CREATE");
-                                stopThread();
-                            } else {
-
-                                queue.add(client);
-                                for (Socket cli : queue) {
-                                    System.out.println("EM ESPERA: " + cli);
+                            if(!checkId(Integer.parseInt(id))) {
+                                if (maxClientsSem.tryAcquire()) {
+                                    this.id = Integer.parseInt(id);
+                                    connectClient(Integer.parseInt(id), client);
+                                } else {
+                                    this.id = Integer.parseInt(id);
+                                    queue.add(this);
+                                    System.out.println("TESTANDO: " + this);
+                                    for (ClientHandler cli : queue) {
+                                        System.out.println("EM ESPERA: " + cli.id + " SOCK: " + cli.client);
+                                    }
+                                    sendMessage("Server is full, wait for someone to quit!", client, Integer.parseInt(id), 1);
                                 }
-                                sendMessage("Server is full, wait for someone to quit!", client, Integer.parseInt(id), 1);
-                                stopThread();
+                            }else{
+                                sendMessage("Already exists a client with that id! Choose another one.", client, Integer.parseInt(id), 1);
                             }
                             break;
                         case "MESSAGE":
-                            if (checkId(Integer.parseInt(id))) {
-                                broadcastMessage(1, Integer.parseInt(id), msgReceived);
-                                stopThread();
-                            } else {
-                                broadcastMessage(2, Integer.parseInt(id), "Server: There is no client with id " + Integer.parseInt(id) + ", message sent to client ");
-                                stopThread();
-                            }
+                            broadcastMessage(1, Integer.parseInt(id), msgReceived);
                             break;
                         case "REMOVE":
-                            if (checkId(Integer.parseInt(id))) {
-                                removeClient(Integer.parseInt(id), client);
-                                maxClientsSem.release();
-                                stopThread();
-                            } else {
-                                broadcastMessage(2, Integer.parseInt(id), "Server: There is no client with id " + Integer.parseInt(id) + ", message sent to client ");
-                                stopThread();
-                            }
+                            removeClient(Integer.parseInt(id), client);
+                            maxClientsSem.release();
+                            stopThread();
                             break;
                     }
                 }
@@ -207,7 +221,7 @@ public class ServerThread extends Thread {
 
         public void connectClient(int id, Socket client) throws IOException {
             connectedClients.put(id, client);
-            broadcastMessage(2, id, "Server: A client with id " + id + " connected to the server! Message to client ");
+            broadcastMessage(2, id, "Server: A client with id " + id + " connected to the server!");
             for (Map.Entry<Integer, Socket> cli : connectedClients.entrySet()) {
                 System.out.println("ID: " + cli.getKey() + " Socket: " + cli.getValue());
             }
@@ -215,25 +229,12 @@ public class ServerThread extends Thread {
         }
 
         public boolean checkId(int id) {
-            boolean idFound = false;
-            for (Map.Entry<Integer, Socket> cli : connectedClients.entrySet()) {
-                if (cli.getKey() == id) {
-                    idFound = true;
-                }
-            }
-            if (idFound) {
-                return true;
-            } else {
-                return false;
-            }
-
+            return connectedClients.containsKey(id);
         }
 
         public void removeClient(int id, Socket client) throws IOException {
-            boolean encontrou = false;
             for (Map.Entry<Integer, Socket> cli : connectedClients.entrySet()) {
                 if (cli.getKey() == id) {
-                    encontrou = true;
                     connectedClients.remove(cli.getKey());
                     broadcastMessage(2, cli.getKey(), "Server: Client " + cli.getKey() + " left the chat, message to client ");
                     try {
@@ -245,13 +246,7 @@ public class ServerThread extends Thread {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    encontrou = false;
                 }
-            }
-            if (!encontrou) {
-                System.out.println("MANDA MSG");
-                sendMessage("There is no client with id " + id, client, id, 2);
             }
         }
 

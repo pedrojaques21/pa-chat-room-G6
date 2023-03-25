@@ -9,7 +9,7 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
     // Reads configuration file and gets correct server configuration
     private static ServerConfig configFile;
-    private static MessageFilter messageFilter;
+    private static UpdateFilter messageFilter;
 
     static {
         try {
@@ -61,7 +61,7 @@ public class Main {
                     break;
                 case 3:
                     // Update Message Filters
-                    System.out.println("\nExecuting option 3...\n");
+                    System.out.println("\nUpdating forbidden words set...\n");
                     updateMessageFilter();
                     break;
                 case 4:
@@ -105,11 +105,11 @@ public class Main {
 
         String word = null;
 
-        System.out.println("Word to add or remove? ");
+        System.out.println("To add or to remove, what's the word? ");
         word = scanner.next();
 
         // Creating and starting a thread for that job,
-        messageFilter = new MessageFilter(word);
+        messageFilter = new UpdateFilter(word);
         Thread threadWords = new Thread(messageFilter);
         threadWords.start();
 

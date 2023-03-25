@@ -20,7 +20,6 @@ public class Main {
         int id = scanner.nextInt();
         ClientThread clientCreate1 = new ClientThread(id,8080,ClientLock,loggerThread);
         clientCreate1.start();
-
     }
 
 }

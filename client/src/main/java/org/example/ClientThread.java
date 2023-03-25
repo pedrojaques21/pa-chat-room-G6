@@ -121,15 +121,7 @@ public class ClientThread extends Thread {
                 while ((messageReceived = in.readLine()) != null) {
                     System.out.println(messageReceived);
                     if(messageReceived.equals("Server: Already exists a client with that id! Choose another one.")){
-                        System.out.println("JA tem");
-                        ReentrantLock ClientLock = new ReentrantLock();
-                        Scanner scanner = new Scanner(System.in);
-                        String logFilePath = "server/server.log";
-                        LoggerThread loggerThread = new LoggerThread(logFilePath);
-                        System.out.print("Insert your id: ");
-                        int id = scanner.nextInt();
-                        ClientThread clientCreate1 = new ClientThread(id,8080,ClientLock,loggerThread);
-                        clientCreate1.start();
+                        changeId();
                     }
                 }
             }
@@ -137,6 +129,15 @@ public class ClientThread extends Thread {
             e.printStackTrace();
             shutdown();
         }
+    }
+
+    public void changeId(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Insert your id: ");
+        int id = scanner.nextInt();
+        this.id = id;
+        System.out.print("THIS WORKING? : "+ id);
+        sendMessage(1, id, "Foi criado um cliente!");
     }
 
     public void shutdown() {
@@ -165,6 +166,8 @@ public class ClientThread extends Thread {
                             sendMessage(3, id, messageToSend);
                             input.close();
                             shutdown();
+                        } else if (messageToSend.equals("/change")) {
+
                         } else {
                             sendMessage(2, id, messageToSend);
                         }

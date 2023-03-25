@@ -261,3 +261,87 @@
 2023-03-25 16:01:51.683 - Action: MESSAGE - Client4 - "hello"
 2023-03-25 16:01:58.787 - Action: DISCONNECTED - Client1
 2023-03-25 16:02:04.263 - Action: MESSAGE - Client6 - "gege"
+2023-03-25 18:56:22.235 - Action: CONNECTED - Client1
+2023-03-25 18:57:16.886 - Action: CONNECTED - Client1
+2023-03-25 18:57:22.926 - Action: CONNECTED - Client2
+2023-03-25 18:57:25.277 - Action: MESSAGE - Client2 - "hello"
+2023-03-25 18:57:32.445 - Action: MESSAGE - Client1 - "hi"
+2023-03-25 18:57:48.612 - Action: CONNECTED - Client1
+2023-03-25 18:57:55.023 - Action: MESSAGE - Client1 - "3"
+2023-03-25 18:58:13.046 - Action: MESSAGE - Client1 - "3"
+2023-03-25 18:58:13.054 - Action: CONNECTED - Client3
+2023-03-25 18:58:23.054 - Action: DISCONNECTED - Client2
+2023-03-25 18:58:38.777 - Action: MESSAGE - Client1 - "he"
+2023-03-25 19:04:34.064 - Action: CONNECTED - Client1
+2023-03-25 19:04:39.889 - Action: CONNECTED - Client1
+2023-03-25 19:04:44.776 - Action: MESSAGE - Client1 - "2"
+2023-03-25 19:04:57.184 - Action: CONNECTED - Client2
+2023-03-25 19:05:12.744 - Action: MESSAGE - Client1 - "not working"
+2023-03-25 19:05:18.023 - Action: MESSAGE - Client1 - "hello"
+2023-03-25 19:05:18.023 - Action: MESSAGE - Client2 - "yes"
+2023-03-25 19:05:22.767 - Action: MESSAGE - Client2 - "kind of"
+2023-03-25 19:05:28.731 - Action: MESSAGE - Client1 - "weird"
+2023-03-25 19:05:32.579 - Action: MESSAGE - Client1 - "ddd"
+2023-03-25 19:16:16.993 - Action: CONNECTED - Client2
+2023-03-25 19:16:23.692 - Action: CONNECTED - Client2
+2023-03-25 19:16:27.979 - Action: MESSAGE - Client2 - "3"
+2023-03-25 19:16:36.802 - Action: CONNECTED - Client3
+2023-03-25 19:16:49.811 - Action: MESSAGE - Client3 - "ok"
+2023-03-25 19:16:49.811 - Action: MESSAGE - Client2 - "jjj"
+2023-03-25 19:16:53.815 - Action: MESSAGE - Client3 - "ok"
+2023-03-25 19:16:54.223 - Action: MESSAGE - Client2 - "ok"
+2023-03-25 19:17:57.723 - Action: MESSAGE - Client3 - "okok"
+2023-03-25 19:19:53.552 - Action: CONNECTED - Client1
+2023-03-25 19:19:59.156 - Action: CONNECTED - Client1
+2023-03-25 19:20:03.093 - Action: MESSAGE - Client1 - "2"
+2023-03-25 19:20:18.103 - Action: MESSAGE - Client1 - "2"
+2023-03-25 19:20:18.111 - Action: CONNECTED - Client2
+2023-03-25 19:20:19.995 - Action: MESSAGE - Client2 - "2 2"
+2023-03-25 19:20:20.002 - Action: MESSAGE - Client2 - "2 2"
+2023-03-25 19:20:52.070 - Action: CONNECTED - Client1
+2023-03-25 19:20:57.884 - Action: CONNECTED - Client1
+2023-03-25 19:20:59.974 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:21:10.715 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:21:10.726 - Action: CONNECTED - Client5
+2023-03-25 19:28:54.440 - Action: CONNECTED - Client1
+2023-03-25 19:29:00.759 - Action: CONNECTED - Client1
+2023-03-25 19:29:02.381 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:29:11.906 - Action: CONNECTED - Client5
+2023-03-25 19:29:13.497 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:29:14.660 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:29:59.400 - Action: CONNECTED - Client1
+2023-03-25 19:30:05.709 - Action: CONNECTED - Client1
+2023-03-25 19:30:07.558 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:30:15.369 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:30:15.375 - Action: CONNECTED - Client5
+2023-03-25 19:33:23.237 - Action: CONNECTED - Client2
+2023-03-25 19:33:29.152 - Action: CONNECTED - Client2
+2023-03-25 19:33:31.895 - Action: MESSAGE - Client2 - "5"
+2023-03-25 19:33:42.598 - Action: MESSAGE - Client2 - "5"
+2023-03-25 19:33:42.605 - Action: CONNECTED - Client5
+2023-03-25 19:37:25.032 - Action: CONNECTED - Client1
+2023-03-25 19:39:17.616 - Action: CONNECTED - Client1
+2023-03-25 19:39:23.779 - Action: CONNECTED - Client1
+2023-03-25 19:40:50.108 - Action: CONNECTED - Client1
+2023-03-25 19:40:56.863 - Action: CONNECTED - Client1
+2023-03-25 19:40:59.835 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:43:32.725 - Action: CONNECTED - Client1
+2023-03-25 19:43:38.684 - Action: CONNECTED - Client1
+2023-03-25 19:43:41.027 - Action: MESSAGE - Client1 - "2"
+2023-03-25 19:46:26.396 - Action: CONNECTED - Client1
+2023-03-25 19:46:32.152 - Action: CONNECTED - Client1
+2023-03-25 19:46:35.048 - Action: MESSAGE - Client1 - "2"
+2023-03-25 19:46:41.203 - Action: CONNECTED - Client2
+2023-03-25 19:48:26.503 - Action: CONNECTED - Client1
+2023-03-25 19:48:31.683 - Action: CONNECTED - Client1
+2023-03-25 19:48:33.674 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:48:37.941 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:48:40.948 - Action: MESSAGE - Client1 - "5"
+2023-03-25 19:48:40.971 - Action: CONNECTED - Client5
+2023-03-25 19:50:58.868 - Action: CONNECTED - Client1
+2023-03-25 19:51:04.144 - Action: CONNECTED - Client1
+2023-03-25 19:51:11.500 - Action: MESSAGE - Client1 - "2"
+2023-03-25 19:51:11.528 - Action: CONNECTED - Client2
+2023-03-25 19:53:16.390 - Action: CONNECTED - Client1
+2023-03-25 19:53:24.434 - Action: CONNECTED - Client1
+2023-03-25 19:53:26.020 - Action: MESSAGE - Client1 - "2"

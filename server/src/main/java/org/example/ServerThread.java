@@ -142,10 +142,7 @@ public class ServerThread extends Thread {
                             connections.add(handler);
                             executor.submit(handler);
 
-                        } else {
-                            // queue is empty, handle it accordingly
                         }
-
                     }catch (IOException e){
                         e.printStackTrace();
                     } catch (InterruptedException e) {
@@ -205,6 +202,7 @@ public class ServerThread extends Thread {
                                 }
                             }else{
                                 sendMessage("Already exists a client with that id! Choose another one.", client, Integer.parseInt(id), 1);
+                                removeConnection(this);
                             }
                             break;
                         case "MESSAGE":
@@ -233,6 +231,14 @@ public class ServerThread extends Thread {
 
         public boolean checkId(int id) {
             return connectedClients.containsKey(id);
+        }
+
+        public void removeConnection(ClientHandler clientToRemove){
+            for (ClientHandler client:connections){
+                if (client == clientToRemove){
+                    connections.remove(clientToRemove);
+                }
+            }
         }
 
         public void removeClient(int id, Socket client) throws IOException {

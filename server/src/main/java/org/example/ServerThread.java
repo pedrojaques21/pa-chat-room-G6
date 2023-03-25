@@ -137,6 +137,7 @@ public class ServerThread extends Thread {
                             System.out.println("CLI " + client);
                             ClientHandler handler = new ClientHandler(client.client, client.id);
                             queue.poll(); // remove the client from the queue after assigning it to a thread
+                            maxClientsSem.acquire();
                             handler.connectClient(client.id,client.client);
                             connections.add(handler);
                             executor.submit(handler);
@@ -147,6 +148,8 @@ public class ServerThread extends Thread {
 
                     }catch (IOException e){
                         e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
                 lockQueueReplies.unlock();
             }

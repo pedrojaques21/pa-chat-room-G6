@@ -248,3 +248,16 @@
 2023-03-25 15:56:37.888 - Action: CONNECTED - Client5
 2023-03-25 15:56:54.962 - Action: CONNECTED - Client6
 2023-03-25 15:56:57.024 - Action: MESSAGE - Client6 - "hello"
+2023-03-25 16:00:36.160 - Action: CONNECTED - Client1
+2023-03-25 16:00:41.021 - Action: CONNECTED - Client2
+2023-03-25 16:00:46.830 - Action: CONNECTED - Client3
+2023-03-25 16:00:51.788 - Action: DISCONNECTED - Client2
+2023-03-25 16:01:03.499 - Action: CONNECTED - Client4
+2023-03-25 16:01:10.763 - Action: MESSAGE - Client4 - "hello"
+2023-03-25 16:01:18.264 - Action: MESSAGE - Client4 - "gi"
+2023-03-25 16:01:21.603 - Action: MESSAGE - Client3 - "gege"
+2023-03-25 16:01:31.909 - Action: CONNECTED - Client6
+2023-03-25 16:01:38.253 - Action: DISCONNECTED - Client3
+2023-03-25 16:01:51.683 - Action: MESSAGE - Client4 - "hello"
+2023-03-25 16:01:58.787 - Action: DISCONNECTED - Client1
+2023-03-25 16:02:04.263 - Action: MESSAGE - Client6 - "gege"

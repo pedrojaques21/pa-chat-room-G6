@@ -50,7 +50,6 @@ public class ClientThread extends Thread {
 
     @Override
     public long getId() {
-
         return this.id;
     }
 

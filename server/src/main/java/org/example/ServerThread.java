@@ -123,7 +123,6 @@ public class ServerThread extends Thread {
                     try {
                         ClientHandler client = queue.peek();
                         if (client != null) {
-                            System.out.println("CLI " + client);
                             ClientHandler handler = new ClientHandler(client.client, client.id);
                             queue.poll(); // remove the client from the queue after assigning it to a thread
                             maxClientsSem.acquire();
@@ -142,7 +141,6 @@ public class ServerThread extends Thread {
         });
         t.start();
     }
-
 
     class ClientHandler implements Runnable {
 
@@ -176,15 +174,13 @@ public class ServerThread extends Thread {
                         String action = messageComponents[0];
                         String id = messageComponents[1];
                         String msgReceived = message.substring(message.indexOf(messageComponents[2]));
-
-                        //Filtering messages, changing forbidden words by "***"
+                        //Filtering messages; replacing forbidden words by "***"
                         readFilterFile("server/filter.txt");
                         for (String str : filterWords) {    // iteration through the HashSet filterWords
                             if (msgReceived.contains(str)) {
                                 msgReceived = msgReceived.replace(str, "***");  // and word replacements
                             }
                         }
-
                         switch (action) {
                             case "CREATE":
                                 if (!checkId(Integer.parseInt(id))) {

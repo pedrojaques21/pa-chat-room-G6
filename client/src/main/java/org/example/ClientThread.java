@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -19,6 +21,8 @@ public class ClientThread extends Thread {
     private boolean running;
     private int port;
     private int id;
+
+    private static AtomicInteger clientCount = new AtomicInteger(1);
     private int totalClients;
     private DataOutputStream out;
     private BufferedReader in;
@@ -33,17 +37,16 @@ public class ClientThread extends Thread {
      * Each Client is constructed using 3 parameters, port, id and freq.
      *
      * @param port is the port where the client should connect to the server;
-     * id is the unique identifier of the client;
-     *
+     *             id is the unique identifier of the client;
      */
-    public ClientThread (int id,int port, ReentrantLock reentrantLock,LoggerThread logger) {
-            this.port = port;
-            this.id = id;
-            this.reentrantLock = reentrantLock;
-            this.running = true;
-            this.logger = logger;
+    public ClientThread(int id, int port, ReentrantLock reentrantLock, LoggerThread logger) {
+        this.port = port;
+        this.id = id;
+        this.reentrantLock = reentrantLock;
+        this.running = true;
+        this.logger = logger;
         try {
-            socket = new Socket("localhost",port);
+            socket = new Socket("localhost", port);
             out = new DataOutputStream(socket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
@@ -69,16 +72,16 @@ public class ClientThread extends Thread {
         try {
             clients.add(client);
             reentrantLock.lock();
-            sendMessage(1,client.id,"Foi criado um cliente!");
+            sendMessage(1, client.id, "Foi criado um cliente!");
         } finally {
             reentrantLock.unlock();
         }
 
     }
 
-    public void sendMessage(int action,int id,String message){
+    public void sendMessage(int action, int id, String message) {
         try {
-            if(action==1){
+            if (action == 1) {
                 reentrantLock.lock();
                 out.writeUTF("CREATE" + " " + id + " " + message);
                 out.flush();
@@ -98,31 +101,43 @@ public class ClientThread extends Thread {
                 reentrantLock.unlock();
             }
 
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void run() {
-        createClient(this);
         try {
-            totalClients++;
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String message;
+            createClient(this);
+            String messageReceived;
             while (running) {
+                clientInput msgInput = new clientInput();
+                Thread t = new Thread(msgInput);
+                t.start();
                 if (socket.isClosed()) {
                     break;
                 }
-                message = in.readLine();
-                if (message != null) {
-                    System.out.println(message);
+                while ((messageReceived = in.readLine()) != null) {
+                    System.out.println(messageReceived);
+                    if(messageReceived.equals("Server: Already exists a client with that id! Choose another one.")){
+                        changeId();
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+            shutdown();
         }
-        shutdown();
+    }
+
+    public void changeId(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Insert your id: ");
+        int id = scanner.nextInt();
+        this.id = id;
+        System.out.print("THIS WORKING? : "+ id);
+        sendMessage(1, id, "Foi criado um cliente!");
     }
 
     public void shutdown() {
@@ -130,11 +145,37 @@ public class ClientThread extends Thread {
         try {
             in.close();
             out.close();
-            if (!socket.isClosed()){
+            if (!socket.isClosed()) {
                 socket.close();
             }
         } catch (IOException e) {
             //Cant Handle
+        }
+    }
+
+
+    class clientInput implements Runnable {
+        @Override
+        public void run() {
+            try {
+                BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+                while (running) {
+                    String messageToSend;
+                    while((messageToSend = input.readLine()) != null) {
+                        if (messageToSend.equals("/quit")) {
+                            sendMessage(3, id, messageToSend);
+                            input.close();
+                            shutdown();
+                        } else if (messageToSend.equals("/change")) {
+
+                        } else {
+                            sendMessage(2, id, messageToSend);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

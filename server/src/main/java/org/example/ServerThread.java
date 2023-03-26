@@ -35,9 +35,9 @@ public class ServerThread extends Thread {
 
     public static int getClientMax() {
 
+
         return maxClients;
     }
-
 
     /**
      * Each Server is constructed using the port number where it will be connected.
@@ -141,7 +141,6 @@ public class ServerThread extends Thread {
                             handler.connectClient(client.id,client.client);
                             connections.add(handler);
                             executor.submit(handler);
-
                         }
                     }catch (IOException e){
                         e.printStackTrace();
@@ -165,6 +164,8 @@ public class ServerThread extends Thread {
 
         private boolean running;
 
+        private HashSet<String> filterWords = new HashSet<>();    // to store filter words
+
         public ClientHandler(Socket client,int id) throws IOException {
             this.client = client;
             this.running = true;
@@ -185,6 +186,15 @@ public class ServerThread extends Thread {
                     String action = messageComponents[0];
                     String id = messageComponents[1];
                     String msgReceived = message.substring(message.indexOf(messageComponents[2]));
+
+                    //Filtering messages, changing forbidden words by "***"
+                    readFilterFile("server/filter.txt");
+                    for (String str : filterWords) {    // iteration through the HashSet filterWords
+                        if (msgReceived.contains(str)) {
+                            msgReceived = msgReceived.replace(str, "***");  // and word replacements
+                        }
+                    }
+
                     switch (action) {
                         case "CREATE":
                             if(!checkId(Integer.parseInt(id))) {
@@ -219,7 +229,6 @@ public class ServerThread extends Thread {
                 e.printStackTrace();
             }
         }
-
         public void connectClient(int id, Socket client) throws IOException {
             connectedClients.put(id, client);
             broadcastMessage(2, id, "Server: A client with id " + id + " connected to the server!");
@@ -240,6 +249,7 @@ public class ServerThread extends Thread {
                 }
             }
         }
+
 
         public void removeClient(int id, Socket client) throws IOException {
             for (Map.Entry<Integer, Socket> cli : connectedClients.entrySet()) {
@@ -264,26 +274,24 @@ public class ServerThread extends Thread {
             running = false;
         }
 
-    }
+        private void readFilterFile(String filterPath) {
+            File original = new File(filterPath);
+            try {
+                Scanner reader = new Scanner(original);
+                while (reader.hasNextLine()) {
+                    String word = reader.nextLine();
+                    filterWords.add(word);  // adding filter words to the HashSet filterWords
+                }
+                reader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
+    }
 
 }
 
 
-
-        /**
-         * To implement filtering the messages
-         *
-         *  public static String parseMessage (String message) {
-         *
-         *             // Creating and starting a thread for that job,
-         *             messageFilter = new MessageFilter(message);
-         *             Thread threadFilter = new Thread(messageFilter);
-         *             threadFilter.start();
-         *
-         *             return message;
-         *
-         *     }
-         */
 
 

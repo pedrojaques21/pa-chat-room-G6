@@ -2,9 +2,6 @@ package org.example;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
@@ -27,8 +24,6 @@ public class ClientThread extends Thread {
     private DataOutputStream out;
     private BufferedReader in;
     private Socket socket;
-    private static ArrayList<ClientThread> clients = new ArrayList<>();
-
 
     /**private final Semaphore sem;*/
 
@@ -70,7 +65,6 @@ public class ClientThread extends Thread {
      */
     public void createClient(ClientThread client) {
         try {
-            clients.add(client);
             reentrantLock.lock();
             sendMessage(1, client.id, "Foi criado um cliente!");
         } finally {

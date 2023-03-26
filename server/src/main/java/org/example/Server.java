@@ -1,9 +1,10 @@
 package org.example;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Main {
+public class Server {
 
     private static String serverConfigPath = "./server/server.config";
     private static Scanner scanner = new Scanner(System.in);
@@ -18,8 +19,6 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
-
-
 
     public static void main ( String[] args ) throws IOException {
 
@@ -98,9 +97,8 @@ public class Main {
 
     /**
      * Method to update, add or remove, words in the server/filter.txt file
-     * That purpose is accomplished with the instance of class MessageFilter,
-     * that implements the interface Runnable
-     */
+     * That purpose is accomplished with the instance of class UpdateFilter,
+     * that implements the interface Runnable  */
     private static void updateMessageFilter ( ) {
 
         String word = null;
@@ -114,4 +112,5 @@ public class Main {
         threadWords.start();
 
     }
+
 }

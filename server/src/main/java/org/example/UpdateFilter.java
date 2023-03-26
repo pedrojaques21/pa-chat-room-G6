@@ -44,7 +44,6 @@ public class UpdateFilter implements Runnable {
     /**
      * Method to read the file filter.txt and store the words in the HashSet
      */
-
     private void readFilterFile(String filterPath) {
         File original = new File(filterPath);
         try {

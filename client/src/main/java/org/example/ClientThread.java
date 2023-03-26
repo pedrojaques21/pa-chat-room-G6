@@ -13,20 +13,14 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ClientThread extends Thread {
 
     private final ReentrantLock reentrantLock;
-
     private final LoggerThread logger;
     private boolean running;
     private int port;
     private int id;
-
-    private static AtomicInteger clientCount = new AtomicInteger(1);
-    private int totalClients;
     private DataOutputStream out;
     private BufferedReader in;
     private Socket socket;
-
-    /**private final Semaphore sem;*/
-
+    private boolean changeID;
 
     /**
      * Each Client is constructed using 3 parameters, port, id and freq.
@@ -40,6 +34,7 @@ public class ClientThread extends Thread {
         this.reentrantLock = reentrantLock;
         this.running = true;
         this.logger = logger;
+        this.changeID = false;
         try {
             socket = new Socket("localhost", port);
             out = new DataOutputStream(socket.getOutputStream());
@@ -48,7 +43,6 @@ public class ClientThread extends Thread {
             e.printStackTrace();
         }
     }
-
 
     public Socket getSocket() {
         return socket;
@@ -92,6 +86,22 @@ public class ClientThread extends Thread {
                 out.writeUTF("REMOVE" + " " + id + " " + message);
                 out.flush();
                 logger.logMessage("REMOVE" + " " + id + " " + "DISCONNECTED");
+                this.running = false;
+                shutdown();
+                reentrantLock.unlock();
+            } else if (action == 4) {
+                reentrantLock.lock();
+                out.writeUTF("CHANGE" + " " + id + " " + message);
+                out.flush();
+                logger.logMessage("CHANGE" + " " + id + " " + "CHANGE ID");
+                this.changeID = false;
+                reentrantLock.unlock();
+            } else if (action == 5) {
+                reentrantLock.lock();
+                out.writeUTF("CHANGEWAITING" + " " + id + " " + message);
+                out.flush();
+                logger.logMessage("CHANGEWAITING" + " " + id + " " + "CHANGE ID");
+                this.changeID = false;
                 reentrantLock.unlock();
             }
 
@@ -115,7 +125,17 @@ public class ClientThread extends Thread {
                 while ((messageReceived = in.readLine()) != null) {
                     System.out.println(messageReceived);
                     if(messageReceived.equals("Server: Already exists a client with that id! Choose another one.")){
-                        changeId();
+                        reentrantLock.lock();
+                        this.changeID = true;
+                        logger.logMessage("EXISTINGID" + " " + id + " " + "CHANGE ID");
+                        reentrantLock.unlock();
+                        changeId(1);
+                    } else if (messageReceived.equals("Server: Already exists a client waiting with that id! Choose another one.")) {
+                        reentrantLock.lock();
+                        this.changeID = true;
+                        logger.logMessage("EXISTINGIDWAITING" + " " + id + " " + "CHANGE ID");
+                        reentrantLock.unlock();
+                        changeId(2);
                     }
                 }
             }
@@ -125,15 +145,20 @@ public class ClientThread extends Thread {
         }
     }
 
-    public void changeId(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Insert your id: ");
-        int id = scanner.nextInt();
-        this.id = id;
-        System.out.print("THIS WORKING? : "+ id);
-        sendMessage(1, id, "Foi criado um cliente!");
+    public void changeId(int action) throws IOException {
+        while (changeID) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Press ENTER and Insert your new id: ");
+            int id = scanner.nextInt();
+            scanner.nextLine();
+            this.id = id;
+            if(action == 1) {
+                sendMessage(4, id, "Changing my id ");
+            } else if (action ==2) {
+                sendMessage(5, id, "Changing my id ");
+            }
+        }
     }
-
     public void shutdown() {
         running = false;
         try {
@@ -142,11 +167,11 @@ public class ClientThread extends Thread {
             if (!socket.isClosed()) {
                 socket.close();
             }
+            System.exit(0);
         } catch (IOException e) {
-            //Cant Handle
+            e.printStackTrace();
         }
     }
-
 
     class clientInput implements Runnable {
         @Override
@@ -155,14 +180,11 @@ public class ClientThread extends Thread {
                 BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
                 while (running) {
                     String messageToSend;
-                    while((messageToSend = input.readLine()) != null) {
+                    while((messageToSend = input.readLine()) != null && !changeID) {
                         if (messageToSend.equals("/quit")) {
                             sendMessage(3, id, messageToSend);
                             input.close();
-                            shutdown();
-                        } else if (messageToSend.equals("/change")) {
-
-                        } else {
+                        }else {
                             sendMessage(2, id, messageToSend);
                         }
                     }

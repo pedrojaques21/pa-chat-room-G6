@@ -60,7 +60,7 @@ public class Server {
                     break;
                 case 3:
                     // Update Message Filters
-                    System.out.println("\nUpdating forbidden words set...\n");
+                    System.out.println("\nUpdating words filter set...\n");
                     updateMessageFilter();
                     break;
                 case 4:
@@ -97,9 +97,9 @@ public class Server {
     }
 
     /**
-     * Method to update, add or remove, words in the server/filter.txt file
+     * Method to update, add or remove, words in the server/filter.txt
      * That purpose is accomplished with the instance of class UpdateFilter,
-     * that implements the interface Runnable  */
+     * which implements the interface Runnable  */
     private static void updateMessageFilter ( ) {
 
         String word = null;

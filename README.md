@@ -11,3 +11,7 @@ The highest priority for this program (and therefore for the server) is to ensur
 The program has a server/server.log file, which should store all the interactions that happened during the execution: messages, client input and output, clients waiting for a slot and associated timestamps.
 
 All the settings you consider necessary for the server should be read from the server/server.config file shared in the base project repository. Any additional parameterization that each group finds necessary should be added to this configuration file.
+
+
+RUNNING CLIENTS:
+After starting the server, for each client, we need to run Client.main. To get several client tabs open, we need to go to the client's file, and choose "Edit Configurations...", followed by "Modify options", and select "Allow multiple instances".      

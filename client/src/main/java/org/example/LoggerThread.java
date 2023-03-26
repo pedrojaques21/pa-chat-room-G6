@@ -38,17 +38,33 @@ public class LoggerThread extends Thread{
             String id = messageComponents[1];
             String messageSent = message.substring(message.indexOf(messageComponents[2]));
 
-            switch (action){
-                case "CREATE", "REMOVE":
-                    String logCreate = timestamp + " - Action: " + messageSent + " - Client" + id +"\n";
+            switch (action) {
+                case "CREATE", "REMOVE" -> {
+                    String logCreate = timestamp + " - Action: " + messageSent + " - Client" + id + "\n";
                     writer.write(logCreate);
-                    break;
-                case "MESSAGE":
+                }
+                case "MESSAGE" -> {
                     String logMessage = timestamp + " - Action: " + action + " - Client" + id + " - " + "\"" + messageSent + "\"" + "\n";
                     writer.write(logMessage);
-                    break;
-                default:
-                    break;
+                }
+                case "CHANGE" -> {
+                    String logIdChange = timestamp + " - Action: " + action + " - Changed Client id to " + id + "\n";
+                    writer.write(logIdChange);
+                }
+                case "EXISTINGID" -> {
+                    String existingId = timestamp + " - Action: " + "EXISTING ID" + " - A Client with id "+ id + " Already Exists!\n";
+                    writer.write(existingId);
+                }
+                case "EXISTINGIDWAITING" ->{
+                    String existingWaitingId = timestamp + " - Action: " + "EXISTING ID" + " - A Client Waiting To connect with id "+ id + " Already Exists!\n";
+                    writer.write(existingWaitingId);
+                }
+                case "CHANGEWAITING" -> {
+                    String logIdChange = timestamp + " - Action: " + "CHANGE" + " - Client Waiting to Connect Changed id to " + id + "\n";
+                    writer.write(logIdChange);
+                }
+                default -> {
+                }
             }
 
             // Write log to file

@@ -65,6 +65,7 @@ public class Main {
                     // Stop the Server
                     System.out.println("Stopping the Server...");
                     server.interrupt();
+                    System.exit(0);
                     break;
                 default:
                     // Invalid option

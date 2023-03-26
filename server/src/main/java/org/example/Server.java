@@ -1,15 +1,16 @@
 package org.example;
 
-import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Main {
+public class Server {
 
     private static String serverConfigPath = "./server/server.config";
     private static Scanner scanner = new Scanner(System.in);
     // Reads configuration file and gets correct server configuration
     private static ServerConfig configFile;
+    private static UpdateFilter messageFilter;
 
     static {
         try {
@@ -27,7 +28,7 @@ public class Main {
         int serverPort = Integer.parseInt(serverPortStr);
         int maxClients = Integer.parseInt(maxClientsStr);
 
-        ServerThread server = new ServerThread ( serverPort , maxClients );
+        ServerThread server = new ServerThread ( serverPort , maxClients,10 );//Colocar os número de workers no file config?
 
         int choice = 0;
 
@@ -59,12 +60,14 @@ public class Main {
                     break;
                 case 3:
                     // Update Message Filters
-                    System.out.println("\nExecuting option 3...\n");
+                    System.out.println("\nUpdating words filter set...\n");
+                    updateMessageFilter();
                     break;
                 case 4:
                     // Stop the Server
                     System.out.println("Stopping the Server...");
                     server.interrupt();
+                    System.exit(0);
                     break;
                 default:
                     // Invalid option
@@ -92,4 +95,23 @@ public class Main {
 
         configFile.setProperty( key, value );
     }
+
+    /**
+     * Method to update, add or remove, words in the server/filter.txt
+     * That purpose is accomplished with the instance of class UpdateFilter,
+     * which implements the interface Runnable  */
+    private static void updateMessageFilter ( ) {
+
+        String word = null;
+
+        System.out.println("To add or to remove, what's the word? ");
+        word = scanner.next();
+
+        // Creating and starting a thread for that job,
+        messageFilter = new UpdateFilter(word);
+        Thread threadWords = new Thread(messageFilter);
+        threadWords.start();
+
+    }
+
 }

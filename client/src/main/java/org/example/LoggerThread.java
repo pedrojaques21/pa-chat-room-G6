@@ -38,37 +38,67 @@ public class LoggerThread extends Thread{
      * @param logFilePath is the path to the log file
      */
     public LoggerThread(String logFilePath) {
+
         this.logFilePath = logFilePath;
         this.loggerLock = new ReentrantLock();
         this.active = true;
     }
 
-    @Override
-    public void run( ) {
+    public void logMessage(String message) {
         try {
             FileWriter writer = new FileWriter(logFilePath, true);
-            while (active) {
-                // Get current time
-                LocalDateTime now = LocalDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-                String timestamp = formatter.format(now);
 
-                // Write log to file
-                String log = timestamp + " - ACTION : " + this.action + " - CLIENT" + this.clientId + (message != null ? " - " + message : "") ;
-                loggerLock.lock();
-                try {
-                    writer.write(log);
-                    writer.flush();
-                } finally {
-                    loggerLock.unlock();
+            // Get current time
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+            String timestamp = formatter.format(now);
+            String[] messageComponents = message.split("\\s+");
+            // Extract the message components
+            String action = messageComponents[0];
+            String id = messageComponents[1];
+            String messageSent = message.substring(message.indexOf(messageComponents[2]));
+
+            switch (action) {
+                case "CREATE", "REMOVE" -> {
+                    String logCreate = timestamp + " - Action: " + messageSent + " - Client" + id + "\n";
+                    writer.write(logCreate);
                 }
-
-                // Sleep for 1 second
-                Thread.sleep(1000);
+                case "MESSAGE" -> {
+                    String logMessage = timestamp + " - Action: " + action + " - Client" + id + " - " + "\"" + messageSent + "\"" + "\n";
+                    writer.write(logMessage);
+                }
+                case "CHANGE" -> {
+                    String logIdChange = timestamp + " - Action: " + action + " - Changed Client id to " + id + "\n";
+                    writer.write(logIdChange);
+                }
+                case "EXISTINGID" -> {
+                    String existingId = timestamp + " - Action: " + "EXISTING ID" + " - A Client with id "+ id + " Already Exists!\n";
+                    writer.write(existingId);
+                }
+                case "EXISTINGIDWAITING" ->{
+                    String existingWaitingId = timestamp + " - Action: " + "EXISTING ID" + " - A Client Waiting To connect with id "+ id + " Already Exists!\n";
+                    writer.write(existingWaitingId);
+                }
+                case "CHANGEWAITING" -> {
+                    String logIdChange = timestamp + " - Action: " + "CHANGE" + " - Client Waiting to Connect Changed id to " + id + "\n";
+                    writer.write(logIdChange);
+                }
+                default -> {
+                }
             }
+
+            // Write log to file
+            writer.flush();
             writer.close();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void run() {
+        while (active) {
+
         }
     }
 

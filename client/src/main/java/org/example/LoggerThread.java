@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * LogWriterThread class represents the thread that wil write all the logs on the server.log file
@@ -11,7 +13,23 @@ import java.time.format.DateTimeFormatter;
 public class LoggerThread extends Thread{
 
     private final String logFilePath;
-    private boolean active = true;
+    private boolean active;
+    private final Lock loggerLock;
+    private String action;
+    private int clientId;
+    private String message;
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     /**
      * LoggerThread constructor creates a thread that logs events and as the log file path as
@@ -22,6 +40,8 @@ public class LoggerThread extends Thread{
     public LoggerThread(String logFilePath) {
 
         this.logFilePath = logFilePath;
+        this.loggerLock = new ReentrantLock();
+        this.active = true;
     }
 
     public void logMessage(String message) {

@@ -349,3 +349,46 @@
 2023-03-26 17:15:09.003 - Action: CONNECTED - Client1
 2023-03-26 17:15:29.714 - Action: MESSAGE - Client0 - "gfgfgfg jerk jjjj ddd"
 2023-03-26 17:16:07.155 - Action: MESSAGE - Client1 - "hhhhh tonto"
+2023-03-27 11:43:02.466 - Action: CONNECTED - Client1
+2023-03-27 11:45:01.262 - Action: CONNECTED - Client1
+2023-03-27 11:45:32.963 - Action: CONNECTED - Client2
+2023-03-27 11:45:36.331 - Action: MESSAGE - Client1 - "hi"
+2023-03-27 11:45:40.059 - Action: MESSAGE - Client2 - "ok"
+2023-03-27 11:45:47.105 - Action: CONNECTED - Client3
+2023-03-27 11:45:53.945 - Action: CONNECTED - Client3
+2023-03-27 11:45:53.968 - Action: EXISTING ID - A Client Waiting To connect with id 3 Already Exists!
+2023-03-27 11:46:00.722 - Action: CHANGE - Client Waiting to Connect Changed id to 4
+2023-03-27 11:46:06.497 - Action: DISCONNECTED - Client1
+2023-03-27 11:46:14.575 - Action: MESSAGE - Client2 - "hello"
+2023-03-27 11:46:18.932 - Action: MESSAGE - Client3 - "hello"
+2023-03-27 11:46:23.275 - Action: DISCONNECTED - Client2
+2023-03-27 11:46:31.135 - Action: MESSAGE - Client4 - "hei"
+2023-03-27 11:46:36.356 - Action: MESSAGE - Client3 - "hey jerk"
+2023-03-27 11:47:10.518 - Action: MESSAGE - Client3 - "ge"
+2023-03-27 11:47:19.771 - Action: MESSAGE - Client3 - "ge"
+2023-03-27 11:47:23.373 - Action: MESSAGE - Client4 - "egerger"
+2023-03-27 11:47:32.686 - Action: CONNECTED - Client5
+2023-03-27 11:47:37.111 - Action: DISCONNECTED - Client4
+2023-03-27 11:47:42.226 - Action: MESSAGE - Client3 - "geg"
+2023-03-27 11:47:57.093 - Action: DISCONNECTED - Client3
+2023-03-27 14:13:32.934 - Action: CONNECTED - Client1
+2023-03-27 14:14:07.202 - Action: CONNECTED - Client1
+2023-03-27 14:14:14.350 - Action: CONNECTED - Client2
+2023-03-27 14:14:23.389 - Action: MESSAGE - Client1 - "ok"
+2023-03-27 14:39:50.763 - Action: CONNECTED - Client1
+2023-03-27 14:39:56.509 - Action: CONNECTED - Client2
+2023-03-27 14:40:02.254 - Action: CONNECTED - Client3
+2023-03-27 14:40:08.928 - Action: CONNECTED - Client4
+2023-03-27 14:40:21.416 - Action: CONNECTED - Client5
+2023-03-27 14:40:27.406 - Action: CONNECTED - Client6
+2023-03-27 14:40:46.584 - Action: MESSAGE - Client6 - "l"
+2023-03-27 14:40:53.433 - Action: MESSAGE - Client3 - "hey"
+2023-03-27 14:41:21.369 - Action: DISCONNECTED - Client4
+2023-03-27 14:52:05.360 - Action: CONNECTED - Client5
+2023-03-27 14:52:26.086 - Action: CONNECTED - Client3
+2023-03-27 14:52:31.204 - Action: CONNECTED - Client2
+2023-03-27 14:52:36.918 - Action: CONNECTED - Client6
+2023-03-27 14:52:43.103 - Action: CONNECTED - Client0
+2023-03-27 14:53:01.310 - Action: MESSAGE - Client2 - "ffff"
+2023-03-27 14:53:11.242 - Action: DISCONNECTED - Client2
+2023-03-27 14:53:11.359 - Action: CONNECTED - Client11

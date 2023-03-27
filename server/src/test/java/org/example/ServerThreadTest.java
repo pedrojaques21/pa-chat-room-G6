@@ -83,7 +83,7 @@
                 scanner.close();
                 System.out.println("CLIENT_MAX: " + clientMax);
 
-                assertEquals(20,clientMax);
+                assertEquals(5,clientMax);
             } catch (
                     FileNotFoundException e) {
                 System.out.println("File not found.");

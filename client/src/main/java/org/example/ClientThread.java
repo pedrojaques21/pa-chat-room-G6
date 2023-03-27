@@ -83,7 +83,7 @@ public class ClientThread extends Thread {
                 reentrantLock.lock();
                 out.writeUTF("CREATE" + " " + id + " " + message);
                 out.flush();
-                logger.logMessage("CREATE" + " " + id + " " + "CONNECTED");
+
                 reentrantLock.unlock();
             } else if (action == 2) {//A client sent a message
                 reentrantLock.lock();
@@ -156,6 +156,10 @@ public class ClientThread extends Thread {
                         logger.logMessage("EXISTINGIDWAITING" + " " + id + " " + "CHANGE ID");
                         reentrantLock.unlock();
                         changeId(2);
+                    } else if (messageReceived.equals("Server: A client with id " + id + " connected to the server!")) {
+                        reentrantLock.lock();
+                        logger.logMessage("CREATE" + " " + id + " " + "CONNECTED");
+                        reentrantLock.unlock();
                     }
                 }
             }
@@ -195,7 +199,7 @@ public class ClientThread extends Thread {
             if (!socket.isClosed()) {
                 socket.close();
             }
-            System.exit(0);
+            //System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }

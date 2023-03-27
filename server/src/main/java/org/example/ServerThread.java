@@ -1,10 +1,21 @@
 package org.example;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -187,6 +198,9 @@ public class ServerThread extends Thread {
      */
     class ClientHandler implements Runnable {
 
+        private static Semaphore semFilter = new Semaphore(1);
+        private static ReentrantLock lockFilter = new ReentrantLock();
+
         private Socket client;
         DataInputStream in;
         PrintWriter out;
@@ -240,11 +254,13 @@ public class ServerThread extends Thread {
                     String msgReceived = message.substring(message.indexOf(messageComponents[2]));
                     //Filtering messages; replacing forbidden words by "***"
                     readFilterFile("server/filter.txt");
+                    lockFilter.lock();
                     for (String str : filterWords) {    // iteration through the HashSet filterWords
                         if (msgReceived.contains(str)) {
-                            msgReceived = msgReceived.replace(str, "*****");  // and word replacements
+                            msgReceived = msgReceived.replace(str, "***");  // and word replacements
                         }
                     }
+                    lockFilter.unlock();
                     switch (action) {
                         case "CREATE"://connects the client to the server
                             //if the id given does not exist already
@@ -411,20 +427,22 @@ public class ServerThread extends Thread {
          * @param filterPath - Path to the file that contains the forbidden words
          * @throws Exception
          */
-        private void readFilterFile(String filterPath) {
-            File original = new File(filterPath);
-            try {
-                //reads the file of the forbidden words
-                Scanner reader = new Scanner(original);
-                while (reader.hasNextLine()) {
-                    String word = reader.nextLine();
-                    filterWords.add(word);  // adding filter words to the HashSet filterWords
+            private void readFilterFile (String filterPath) {
+                File original = new File(filterPath);
+                try {
+                    semFilter.acquire();
+                    Scanner reader = new Scanner(original);
+                    while (reader.hasNextLine()) {
+                        String word = reader.nextLine();
+                        filterWords.add(word);  // adding filter words to the HashSet filterWords
+                    }
+                    reader.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    semFilter.release();
                 }
-                reader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }
 
     }
 }

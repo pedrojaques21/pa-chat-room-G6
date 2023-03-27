@@ -17,7 +17,7 @@ class ClientThreadTest {
     @Test
     @DisplayName("Check if client is connected correctly")
     public void createClient(){
-        File file = new File(("server.log"));
+        File file = new File(("../server/server.log"));
         ReentrantLock ClientLock = new ReentrantLock();
         String logFilePath = file.getAbsolutePath();
         LoggerThread loggerThread = new LoggerThread(logFilePath);
@@ -33,7 +33,7 @@ class ClientThreadTest {
     @Test
     @DisplayName("Checks if the message sent is written correctly on the log")
     public void createClientsWithSameId() throws IOException, InterruptedException {
-        File file = new File(("server.log"));
+        File file = new File(("../server/server.log"));
         ReentrantLock ClientLock = new ReentrantLock();
         String logFilePath = file.getAbsolutePath();
         LoggerThread loggerThread = new LoggerThread(logFilePath);
@@ -49,7 +49,7 @@ class ClientThreadTest {
     @Test
     @DisplayName("Checks if the message sent is written correctly on the log")
     public void testSendMessage() throws IOException {
-        File file = new File(("server.log"));
+        File file = new File(("../server/server.log"));
         ReentrantLock ClientLock = new ReentrantLock();
         String logFilePath = file.getAbsolutePath();
         LoggerThread loggerThread = new LoggerThread(logFilePath);
@@ -64,7 +64,7 @@ class ClientThreadTest {
     @Test
     @DisplayName("Client quiting")
     public void testQuitClient() throws IOException, InterruptedException {
-        File file = new File(("server.log"));
+        File file = new File(("../server/server.log"));
         ReentrantLock ClientLock = new ReentrantLock();
         String logFilePath = file.getAbsolutePath();
         LoggerThread loggerThread = new LoggerThread(logFilePath);
@@ -83,7 +83,7 @@ class ClientThreadTest {
     @Test
     @DisplayName("Changing Client Id after submitting a existing id")
     public void changeClientId() throws IOException, InterruptedException {
-        File file = new File(("server.log"));
+        File file = new File(("../server/server.log"));
         ReentrantLock ClientLock = new ReentrantLock();
         String logFilePath = file.getAbsolutePath();
         LoggerThread loggerThread = new LoggerThread(logFilePath);
@@ -114,7 +114,7 @@ class ClientThreadTest {
     @Test
     @DisplayName("Check that server has a limited size and the waiting clients connect in a FIFO way, considering a chat size o 4")
     public void serverLimitSizeAndConnectInAFIFOWay() throws IOException, InterruptedException {
-        File file = new File(("server.log"));
+        File file = new File(("../server/server.log"));
         ReentrantLock ClientLock = new ReentrantLock();
         String logFilePath = file.getAbsolutePath();
         LoggerThread loggerThread = new LoggerThread(logFilePath);

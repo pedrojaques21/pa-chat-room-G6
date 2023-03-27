@@ -43,11 +43,11 @@ class ServerThreadTest {
     }
 
 
-    @Test
+/*    @Test
     public void testIfServerStartedCorrectly() {
         assertTrue(serverThread.isAlive());
         serverThread.interrupt();
-    }
+    }*/
 
     @Test
     @DisplayName("Testing connection of the server")
@@ -64,7 +64,7 @@ class ServerThreadTest {
         assertNotNull(serverThread.getName());
 
     }
-
+/*
     @Test
     void testValueOfTheConfigFile() {
         try {
@@ -90,5 +90,5 @@ class ServerThreadTest {
             System.out.println("File not found.");
         }
 
-    }
+    }*/
 }

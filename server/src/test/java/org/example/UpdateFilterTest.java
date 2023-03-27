@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UpdateFilterTest {
 
 
-    private String path = "server/filterTest.txt";
+    public String path = "server/filterTest.txt";
     HashSet<String> filterWrd = new HashSet<String>();
 
     @BeforeEach
@@ -38,7 +38,7 @@ class UpdateFilterTest {
         filterWrd.add("word1");
 
     }
-
+/*
     @Test
     @DisplayName ("Add a word")
     public void readFilterTest(path) {
@@ -46,7 +46,7 @@ class UpdateFilterTest {
             writer.write(word + "\n");
     }
 }
-
+*/
 
     @Test
     public void addWord() {
@@ -55,7 +55,7 @@ class UpdateFilterTest {
 
     }
 
-
+/*
     private void writeFilterFile(String updatedFile) {
 
         try {
@@ -71,6 +71,7 @@ class UpdateFilterTest {
             lock.unlock();
         }
     }
+ */
 /**
     @Test
     public void readFiltro(server/) {

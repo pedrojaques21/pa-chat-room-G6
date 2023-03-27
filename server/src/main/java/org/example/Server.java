@@ -1,11 +1,14 @@
 package org.example;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Class that represents the Server and contains the main method
+ * Responsible for running the server, updating server configurations, updating filter words and stopping the server.
+ */
 public class Server {
 
+    //path to the server config file
     private static String serverConfigPath = "./server/server.config";
     private static Scanner scanner = new Scanner(System.in);
     // Reads configuration file and gets correct server configuration
@@ -20,6 +23,11 @@ public class Server {
         }
     }
 
+    /**
+     * Main method that receives user input and processes its actions
+     * @param args
+     * @throws IOException
+     */
     public static void main ( String[] args ) throws IOException {
 
         String serverPortStr = configFile.getProperty("PORT");
@@ -28,7 +36,8 @@ public class Server {
         int serverPort = Integer.parseInt(serverPortStr);
         int maxClients = Integer.parseInt(maxClientsStr);
 
-        ServerThread server = new ServerThread ( serverPort , maxClients,10 );//Colocar os número de workers no file config?
+        //creates a new server Thread, with 7 workers
+        ServerThread server = new ServerThread ( serverPort , maxClients,7 );
 
         int choice = 0;
 

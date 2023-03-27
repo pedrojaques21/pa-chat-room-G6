@@ -14,4 +14,5 @@ All the settings you consider necessary for the server should be read from the s
 
 
 RUNNING CLIENTS:
-After starting the server, for each client, we need to run Client.main. To get several client tabs open, we need to go to the client's file, and choose "Edit Configurations...", followed by "Modify options", and select "Allow multiple instances".      
+After starting the server, for each client, we need to run Client.main. To get several client tabs open, we need to go to the client's file, and choose "Edit Configurations...", followed by "Modify options", and select "Allow multiple instances".
+

@@ -1,20 +1,10 @@
 package org.example;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.ReentrantLock;
-import org.junit.jupiter.api.AfterEach;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.io.*;
-import java.net.Socket;
-import java.util.Scanner;
 
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashSet;
 
 
 class UpdateFilterTest {

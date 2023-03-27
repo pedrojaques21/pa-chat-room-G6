@@ -16,7 +16,6 @@ public class UpdateFilter implements Runnable {
     private static ReentrantLock lock = new ReentrantLock();
 
     private String word;
-
     String filterPath = "server/filter.txt";
     private HashSet<String> filterWords = new HashSet<String>();    // to store filter words
 
@@ -27,7 +26,6 @@ public class UpdateFilter implements Runnable {
     public UpdateFilter(String word) {
         this.word = word;
     }
-
 
     /**
      * Run method that reads the input of the user and checks if it already exists on the forbidden words file.
@@ -51,10 +49,6 @@ public class UpdateFilter implements Runnable {
         } finally {
             lock.unlock();
         }
-
-
-
-
 
         System.out.println("\n\nFilter updated!");
         System.out.println("Word set: " + filterWords);

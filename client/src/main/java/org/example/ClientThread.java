@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -18,7 +17,6 @@ public class ClientThread extends Thread {
     private final ReentrantLock reentrantLock;
     private final LoggerThread logger;
     private boolean running;
-    private int port;
     private int id;
     private DataOutputStream out;
     private BufferedReader in;
@@ -33,7 +31,6 @@ public class ClientThread extends Thread {
      * @param logger - thread used to write on the log file
      */
     public ClientThread(int id, int port, ReentrantLock reentrantLock, LoggerThread logger) {
-        this.port = port;
         this.id = id;
         this.reentrantLock = reentrantLock;
         //represents if the client is still active
@@ -180,7 +177,7 @@ public class ClientThread extends Thread {
     public void changeId(int action) throws IOException {
         while (changeID) {
             Scanner scanner = new Scanner(System.in);
-            System.out.print("Press ENTER and Insert your new id: ");
+            System.out.print("Insert your new id (Keep inserting and submiting until the server responds): ");
             int id = scanner.nextInt();
             scanner.nextLine();
             this.id = id;

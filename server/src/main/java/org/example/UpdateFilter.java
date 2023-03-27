@@ -16,16 +16,19 @@ public class UpdateFilter implements Runnable {
     String filterPath = "server/filter.txt";
     private HashSet<String> filterWords = new HashSet<String>();    // to store filter words
 
-    // Constructor to implement a filter update.
+    /**
+     * Constructor of the class {@link UpdateFilter}
+     * @param word - represents the forbidden word
+     */
     public UpdateFilter(String word) {
         this.word = word;
     }
 
-    /** // Constructor to filter client messages
-    public MessageFilter(String messageToParse) {
-        this.messageToParse = messageToParse;
-    }*/
 
+    /**
+     * Run method that reads the input of the user and checks if it already exists on the forbidden words file.
+     * If it exists it shall remove it otherwise it will add it.
+     */
     @Override
     public void run() {
 

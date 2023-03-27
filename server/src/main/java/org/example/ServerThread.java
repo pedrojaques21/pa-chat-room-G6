@@ -74,6 +74,14 @@ public class ServerThread extends Thread {
         maxClientsSem = new Semaphore(maxClients);
     }
 
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public static void setMaxClients(int maxClients) {
+        ServerThread.maxClients = maxClients;
+    }
+
     /**
      * Method used to <b>broadcast the message to all connected clients, except the client that sent the message</b>.
      *

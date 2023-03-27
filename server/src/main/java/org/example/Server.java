@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -48,6 +49,7 @@ public class Server {
             System.out.println("2. Update Server Configurations"); // This option can be used while the server is running to refresh server configurations from server.config file
             System.out.println("3. Update Message Filters"); // This option can be used while the server is running to update message filters from filter.txt
             System.out.println("4. Stop Server"); // This option will stop the server and close all connections
+            System.out.println("5. Flush server logs"); // This option will stop the server and close all connections
             System.out.print("Choose an option: ");
             try {
                 choice = scanner.nextInt();
@@ -66,7 +68,34 @@ public class Server {
                 case 2:
                     // Update Server configurations
                     System.out.println("\nUpdating Server configurations...\n");
-                    updateServerConfigs();
+
+                    serverPortStr = configFile.getProperty("PORT");
+                    maxClientsStr = configFile.getProperty("MAX_CLIENTS");
+
+                    serverPort = Integer.parseInt(serverPortStr);
+                    maxClients = Integer.parseInt(maxClientsStr);
+
+                    String key;
+                    String value;
+
+                    System.out.println("The available configurations are -> " + configFile.getKeys());
+
+                    System.out.println("\nWhich configuration would you like to change: ");
+                    key = scanner.nextLine();
+
+                    System.out.println("Which value do you want to set it: ");
+                    value = scanner.nextLine();
+
+                    configFile.setProperty( key, value );
+
+                    if (key == "PORT") {
+                        server.setPort(Integer.parseInt(value));
+                    }
+
+                    if (key == "MAX_CLIENTS"){
+                        server.setMaxClients(Integer.parseInt(value));
+                    }
+
                     break;
                 case 3:
                     // Update Message Filters
@@ -79,31 +108,23 @@ public class Server {
                     server.interrupt();
                     System.exit(0);
                     break;
+                case 5:
+                    try {
+                        FileWriter fileWriter = new FileWriter("./server/server.log", false);
+                        fileWriter.write(""); // write empty string to file
+                        fileWriter.close();
+                        System.out.println("Successfully flushed logs.");
+                    } catch (IOException e) {
+                        System.out.println("An error occurred.");
+                        e.printStackTrace();
+                    }
+                    break;
                 default:
                     // Invalid option
                     System.out.println("Invalid option.");
             }
         } while (choice != 4);
         scanner.close();
-    }
-
-    /**
-     * This method will update server configs directly to the server.config file during server run time
-     */
-    private static void updateServerConfigs ( ) {
-
-        String key;
-        String value;
-
-        System.out.println("The available configurations are -> " + configFile.getKeys());
-
-        System.out.println("\nWhich configuration would you like to change: ");
-        key = scanner.nextLine();
-
-        System.out.println("Which value do you want to set it: ");
-        value = scanner.nextLine();
-
-        configFile.setProperty( key, value );
     }
 
     /**
